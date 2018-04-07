@@ -129,6 +129,12 @@ console.log('Building...');
 const code = build();
 console.log('Build complete, verifying...');
 verify(code);
-console.log('Verification complete, writing file...');
-fs.writeFileSync('path-parse-raw.js', code);
+console.log('Verification complete');
+if (process.argv[2] === 'check') {
+  console.log('Checking file equality...');
+  assert.equal(fs.readFileSync('path-parse-raw.js', 'utf-8'), code);
+} else {
+  console.log('Writing file...');
+  fs.writeFileSync('path-parse-raw.js', code);
+}
 console.log('Done!');
