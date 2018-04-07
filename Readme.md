@@ -1,5 +1,8 @@
 # path.parse() from Node.js as a standalone package
 
+[![npm](https://img.shields.io/npm/v/packaged-path-parse.svg)](https://www.npmjs.com/package/packaged-path-parse)
+[![Build Status](https://travis-ci.org/ChALkeR/packaged-path-parse.svg?branch=master)](https://travis-ci.org/ChALkeR/packaged-path-parse)
+
 [path.parse()](https://nodejs.org/api/path.html#path_path_parse_path) from a
 current Node.js version (matching this package version), packaged into a
 stand-alone module, without deps (including Node.js core).
