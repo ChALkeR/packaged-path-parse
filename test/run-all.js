@@ -1,9 +1,8 @@
 'use strict';
 
-const tape = require('tape');
-const impl = require('../path-parse-raw');
-const es3impl = require('../index');
-const tests = require('./tests');
+var tape = require('tape');
+var impl = require('../path-parse-raw');
+var es3impl = require('../index');
 
 tape('normal and es3 versions match', (t) => {
   t.strictEqual(impl.version, es3impl.version);
@@ -16,5 +15,10 @@ tape('normal and es3 versions match', (t) => {
   t.end();
 });
 
-tests.run(impl, tape);
-tests.run(es3impl, tape, false);
+var tests = ['./simple', './complex'];
+
+for (const test of tests) {
+  const lib = require(test)
+  lib.run(impl, tape);
+  lib.run(es3impl, tape, false);
+}

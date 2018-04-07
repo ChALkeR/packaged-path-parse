@@ -19,7 +19,8 @@
 const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
-const tests = require('./test/tests');
+const testsSimple = require('./test/simple');
+const testsComplex = require('./test/complex');
 const { version } = require('./package.json');
 
 if (`v${version}` !== process.version) {
@@ -34,7 +35,7 @@ if (`v${version}` !== process.version) {
 const fun2str = (fun) => Function.prototype.toString.call(fun);
 
 function generateTestdata() {
-  const strings = tests.teststrings();
+  const strings = testsComplex.teststrings();
   const res = [];
   for (const string of strings) {
     for (const type of ['win32', 'posix']) {
@@ -114,7 +115,8 @@ function verify(code) {
   const test = {...assert};
   test.end = () => {};
   test.deepEqual = test.deepStrictEqual;
-  tests.run(obj, (name, run) => run(test), true);
+  testsSimple.run(obj, (name, run) => run(test), true);
+  testsComplex.run(obj, (name, run) => run(test), true);
 }
 
 console.log('Generating testdata...');

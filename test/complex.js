@@ -1,5 +1,3 @@
-// NOTE: this file only includes the tests, to run them, use 'runner.js'
-
 'use strict';
 
 const path = require('path');
@@ -52,18 +50,6 @@ function run(impl, test, sourceExact) {
     posix: { parse: impl.posix },
   };
 
-  test('is a function', (t) => {
-    t.equal(typeof impl, 'function');
-    t.end();
-  });
-  test('all properties exist', (t) => {
-    const props = ['win32', 'posix', 'version'];
-    for (const name of props) {
-      t.notEqual(typeof impl[name], 'undefined');
-    }
-    t.deepEqual(Object.keys(impl), props);
-    t.end();
-  });
   test('equal to current version', (t) => {
     let check = process.version === impl.version;
     if (sourceExact === false) {
@@ -78,38 +64,6 @@ function run(impl, test, sourceExact) {
         'Current Node.js version is not equal to path.parse version, ' +
         'skipping source equality test.'
       );
-    }
-    t.end();
-  });
-  test('throws on non-strings', (t) => {
-    for (const arg of [0, {}, /x/, NaN, null, undefined, new String('x')]) {
-      t.throws(() => impl(arg));
-      t.throws(() => impl.win32(arg));
-      t.throws(() => impl.posix(arg));
-    }
-    t.end();
-  });
-  test('does not throw on strings', (t) => {
-    for (const arg of ['', 'a', String('x')]) {
-      t.doesNotThrow(() => impl(arg));
-      t.doesNotThrow(() => impl.win32(arg));
-      t.doesNotThrow(() => impl.posix(arg));
-    }
-    t.end();
-  });
-  test('is either win32 or posix, and is the correct one', (t) => {
-    t.ok(impl.win32 !== impl.posix);
-    t.ok(impl === impl.win32 || impl === impl.posix);
-    t.ok(
-      impl === impl.win32 && path === path.win32 ||
-      impl === impl.posix && path === path.posix
-    );
-    t.end();
-  });
-  test('expected results on testdata', (t) => {
-    const entries = JSON.parse(read('./test/data.json'));
-    for (const { string, type, result } of entries) {
-      t.deepEqual(impl[type](string), result);
     }
     t.end();
   });
