@@ -1,4 +1,4 @@
-// NOTE: this file only includes the tests, to run them, use 'test.js'
+// NOTE: this file only includes the tests, to run them, use 'runner.js'
 
 'use strict';
 
@@ -107,7 +107,7 @@ function run(impl, test, sourceExact) {
     t.end();
   });
   test('expected results on testdata', (t) => {
-    const entries = JSON.parse(read('./tests.json'));
+    const entries = JSON.parse(read('./test/data.json'));
     for (const { string, type, result } of entries) {
       t.deepEqual(impl[type](string), result);
     }

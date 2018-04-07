@@ -1,8 +1,8 @@
 'use strict';
 
 const tape = require('tape');
-const impl = require('./path-parse-raw');
-const es3impl = require('./index');
+const impl = require('../path-parse-raw');
+const es3impl = require('../index');
 const tests = require('./tests');
 
 tape('normal and es3 versions match', (t) => {

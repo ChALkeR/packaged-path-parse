@@ -19,7 +19,7 @@
 const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
-const tests = require('./tests');
+const tests = require('./test/tests');
 const { version } = require('./package.json');
 
 if (`v${version}` !== process.version) {
@@ -119,7 +119,7 @@ function verify(code) {
 
 console.log('Generating testdata...');
 const testdata = generateTestdata();
-fs.writeFileSync('tests.json', JSON.stringify(testdata, undefined, 2));
+fs.writeFileSync('test/data.json', JSON.stringify(testdata, undefined, 2));
 console.log('Testdata written.');
 
 
