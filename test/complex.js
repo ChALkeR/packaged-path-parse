@@ -70,9 +70,10 @@ function run(impl, test, sourceExact) {
   test('identical result on short strings', (t) => {
     if (current) {
       for (const arg of gen(1, 'a/\\.:?')) {
-        t.deepEqual(impl(arg), path.parse(arg), arg);
-        t.deepEqual(impl.win32(arg), path.win32.parse(arg), arg);
-        t.deepEqual(impl.posix(arg), path.posix.parse(arg), arg);
+        const label = JSON.stringify(arg);
+        t.deepEqual(impl(arg), path.parse(arg), `default ${label}`);
+        t.deepEqual(impl.win32(arg), path.win32.parse(arg), `win32 ${label}`);
+        t.deepEqual(impl.posix(arg), path.posix.parse(arg), `posix ${label}`);
       }
     } else {
       t.skip(
@@ -110,9 +111,10 @@ function run(impl, test, sourceExact) {
     t.ok(strings.length > 10);
     if (current) {
       for (const arg of strings) {
-        t.deepEqual(impl(arg), path.parse(arg), arg);
-        t.deepEqual(impl.win32(arg), path.win32.parse(arg), arg);
-        t.deepEqual(impl.posix(arg), path.posix.parse(arg), arg);
+        const label = JSON.stringify(arg);
+        t.deepEqual(impl(arg), path.parse(arg), `default ${label}`);
+        t.deepEqual(impl.win32(arg), path.win32.parse(arg), `win32 ${label}`);
+        t.deepEqual(impl.posix(arg), path.posix.parse(arg), `posix ${label}`);
       }
     } else {
       t.skip(

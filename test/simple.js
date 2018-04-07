@@ -57,7 +57,8 @@ function run(impl, test, sourceExact) {
       var string = entries[i].string;
       var type = entries[i].type;
       var result = entries[i].result;
-      t.deepEqual(impl[type](string), result);
+      var label = type + ' ' + JSON.stringify(string);
+      t.deepEqual(impl[type](string), result, label);
     }
     t.end();
   });
