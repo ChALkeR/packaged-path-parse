@@ -96,6 +96,15 @@ major/minor versions when `path.parse` was not affected by those — that way yo
 and your users will get important updates faster, and that will better
 de-duplicate the code in case of several packages using this one.
 
+## Is this compatible to `path-parse` npm package?
+
+[path-parse](https://www.npmjs.com/package/path-parse) package looks
+unmaintained and uses the old Node.js code that did the parsing using regexes.
+
+The [tests](https://github.com/jbgutierrez/path-parse/blob/0f85a34/test.js) from
+`path-parse` module pass on `packaged-path-parse` with the exception of the
+exact `TypeError` error message texts — those were changed in Node.js over time.
+
 ## License
 
 MIT. See `LICENSE` file.
