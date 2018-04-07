@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "node ./builder.js && babel path-parse-raw.js --out-file index.js && npm t",
-    "simpletest": "tape test/run-simple.js",
+    "simpletest": "node test/run-simple.js",
     "test": "tape test/run-all.js"
   },
   "keywords": [
