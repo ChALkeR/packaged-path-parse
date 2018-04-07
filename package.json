@@ -44,7 +44,6 @@
     "LICENSE",
     ".babelrc",
     "builder.js",
-    "index.js",
-    "path-parse-raw.js"
+    "index.js"
   ]
 }
