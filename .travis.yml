@@ -1,11 +1,33 @@
 language: node_js
 node_js:
   - "stable"
+  - "9.11.1"
   - "9"
   - "8"
+  - "6"
 notifications:
   email: false
 matrix:
   include:
     - node_js: "9.11.1"
       script: npm run build
+    - node_js: "4"
+      script: npm run simpletest
+    - node_js: "4.0.0"
+      script: npm run simpletest
+    - node_js: "0.12"
+      script: npm run simpletest
+    - node_js: "0.12.0"
+      script: npm run simpletest
+    - node_js: "0.10"
+      install: true
+      script: npm run simpletest
+    - node_js: "0.10.0"
+      install: true
+      script: npm run simpletest
+    - node_js: "0.8"
+      install: true
+      script: npm run simpletest
+    - node_js: "0.8.6"
+      install: true
+      script: npm run simpletest
