@@ -2,7 +2,6 @@
 
 var path = require('path');
 var fs = require('fs');
-var equal = require('deep-equal');
 
 function read(file) {
   return fs.readFileSync(file, 'utf-8');
