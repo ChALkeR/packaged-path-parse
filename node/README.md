@@ -1,8 +1,7 @@
 # Node.js path parts
 
-This folder, except for the `README.md` and `VERSION` files, consists of
-files directly copied from the corresponding Node.js release, defined in
-`VERSION` file.
+This folder, except for the `README.md` file, consists of files directly copied
+from the corresponding Node.js release, defined in the top-level `package.json`.
 
 Those are used for building the `path-parse.js` file in the top directory.
 
