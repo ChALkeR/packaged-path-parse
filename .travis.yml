@@ -1,8 +1,8 @@
 language: node_js
 node_js:
-  - 'lts'
-  - '9'
-  - '8'
+  - "stable"
+  - "9"
+  - "8"
 notifications:
   email: false
 matrix:
