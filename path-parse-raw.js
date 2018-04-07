@@ -1,3 +1,5 @@
+// packaged-path-parse - path.parse() extracted from Node.js v9.11.1
+
 const pathParse = (function(){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -294,7 +296,6 @@ const proc = typeof process === 'undefined' ? {} : process;
 const pathParse = (proc.platform === 'win32') ? win32 : posix;
 pathParse.win32 = win32;
 pathParse.posix = posix;
-pathParse.version = 'v9.11.1';
 return pathParse;
 }());
 if (typeof module !== 'undefined') module.exports = pathParse;

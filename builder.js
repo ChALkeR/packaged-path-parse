@@ -74,6 +74,8 @@ function build() {
   assert.equal(posix, fun2str(path.posix.parse));
 
   const code = `
+// packaged-path-parse - path.parse() extracted from Node.js v${version}
+
 const pathParse = (function(){
 ${head}
 const win32 = ${win32};
@@ -82,7 +84,6 @@ const proc = typeof process === 'undefined' ? {} : process;
 const pathParse = (proc.platform === 'win32') ? win32 : posix;
 pathParse.win32 = win32;
 pathParse.posix = posix;
-pathParse.version = 'v${version}';
 return pathParse;
 }());
 if (typeof module !== 'undefined') module.exports = pathParse;
@@ -97,8 +98,8 @@ function verify(code) {
     'return pathParse;'
   );
   const obj = new Function(funCode)();
-  // Assert that the code loads and we built the correct version
-  assert.equal(obj.version, process.version);
+  // Assert that the code loads and returns a function
+  assert.equal(typeof obj, 'function');
   // Assert the functons are the same
   assert.equal(fun2str(obj.win32), fun2str(path.win32.parse));
   assert.equal(fun2str(obj.posix), fun2str(path.posix.parse));
@@ -115,8 +116,8 @@ function verify(code) {
   const test = {...assert};
   test.end = () => {};
   test.deepEqual = test.deepStrictEqual;
-  testsSimple.run(obj, (name, run) => run(test), true);
-  testsComplex.run(obj, (name, run) => run(test), true);
+  testsSimple.run(obj, (name, run) => run(test));
+  testsComplex.run(obj, (name, run) => run(test), true, true);
 }
 
 console.log('Generating testdata...');

@@ -42,8 +42,7 @@ function teststrings() {
   return uniq;
 }
 
-function run(impl, test, sourceExact) {
-  const current = process.version === impl.version;
+function run(impl, test, current = false, sourceExact = false) {
   const implwrap = {
     parse: impl,
     win32: { parse: impl.win32 },
@@ -60,11 +59,9 @@ function run(impl, test, sourceExact) {
     t.end();
   });
   test('equal to current version', (t) => {
-    let check = process.version === impl.version;
-    if (sourceExact === false) {
-      // Skip is requested manually, do nothing here
-    } else if (current || sourceExact === true) {
-      t.equal(process.version, impl.version);
+    if (!sourceExact) {
+      // Skip if tis test was not requested, nothing to do here
+    } else if (current) {
       t.equal(fun2str(impl), fun2str(path.parse));
       t.equal(fun2str(impl.win32), fun2str(path.win32.parse));
       t.equal(fun2str(impl.posix), fun2str(path.posix.parse));

@@ -67,8 +67,8 @@ How recent? That's easy to tell — it matches with this package version!
 
 That also makes [testing](#tested) easier.
 
-Also, the Node.js (and this package) version is exported through `.version`
-property.
+Also, the Node.js (and this package) version is mentioned on the very first line
+of the library js file (`index.js`).
 
 ## Semver?
 

@@ -6,13 +6,13 @@ function read(file) {
   return fs.readFileSync(file, 'utf-8');
 }
 
-function run(impl, test, sourceExact) {
+function run(impl, test) {
   test('is a function', function (t) {
     t.equal(typeof impl, 'function');
     t.end();
   });
   test('all properties exist', function (t) {
-    var props = ['win32', 'posix', 'version'];
+    var props = ['win32', 'posix'];
     for (var i = 0; i < props.length; i++) {
       var name = props[i];
       t.notEqual(typeof impl[name], 'undefined');
