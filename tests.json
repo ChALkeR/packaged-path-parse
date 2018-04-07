@@ -1,0 +1,1850 @@
+[
+  {
+    "type": "win32",
+    "string": "use strict",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "use strict",
+      "ext": "",
+      "name": "use strict"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "use strict",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "use strict",
+      "ext": "",
+      "name": "use strict"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "../common",
+    "result": {
+      "root": "",
+      "dir": "..",
+      "base": "common",
+      "ext": "",
+      "name": "common"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "../common",
+    "result": {
+      "root": "",
+      "dir": "..",
+      "base": "common",
+      "ext": "",
+      "name": "common"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "assert",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "assert",
+      "ext": "",
+      "name": "assert"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "assert",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "assert",
+      "ext": "",
+      "name": "assert"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "path",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "path",
+      "ext": "",
+      "name": "path"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "path",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "path",
+      "ext": "",
+      "name": "path"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "C:\\path\\dir\\index.html",
+    "result": {
+      "root": "C:\\",
+      "dir": "C:\\path\\dir",
+      "base": "index.html",
+      "ext": ".html",
+      "name": "index"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "C:\\path\\dir\\index.html",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "C:\\path\\dir\\index.html",
+      "ext": ".html",
+      "name": "C:\\path\\dir\\index"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "C:\\",
+    "result": {
+      "root": "C:\\",
+      "dir": "C:\\",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "posix",
+    "string": "C:\\",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "C:\\",
+      "ext": "",
+      "name": "C:\\"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "C:\\another_path\\DIR\\1\\2\\33\\\\index",
+    "result": {
+      "root": "C:\\",
+      "dir": "C:\\another_path\\DIR\\1\\2\\33\\",
+      "base": "index",
+      "ext": "",
+      "name": "index"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "C:\\another_path\\DIR\\1\\2\\33\\\\index",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "C:\\another_path\\DIR\\1\\2\\33\\\\index",
+      "ext": "",
+      "name": "C:\\another_path\\DIR\\1\\2\\33\\\\index"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "another_path\\DIR with spaces\\1\\2\\33\\index",
+    "result": {
+      "root": "",
+      "dir": "another_path\\DIR with spaces\\1\\2\\33",
+      "base": "index",
+      "ext": "",
+      "name": "index"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "another_path\\DIR with spaces\\1\\2\\33\\index",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "another_path\\DIR with spaces\\1\\2\\33\\index",
+      "ext": "",
+      "name": "another_path\\DIR with spaces\\1\\2\\33\\index"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "posix",
+    "string": "",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "win32",
+    "string": "\\",
+    "result": {
+      "root": "\\",
+      "dir": "\\",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "posix",
+    "string": "\\",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "\\",
+      "ext": "",
+      "name": "\\"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "\\foo\\C:",
+    "result": {
+      "root": "\\",
+      "dir": "\\foo",
+      "base": "C:",
+      "ext": "",
+      "name": "C:"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "\\foo\\C:",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "\\foo\\C:",
+      "ext": "",
+      "name": "\\foo\\C:"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "file",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "file",
+      "ext": "",
+      "name": "file"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "file",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "file",
+      "ext": "",
+      "name": "file"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "file:stream",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "file:stream",
+      "ext": "",
+      "name": "file:stream"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "file:stream",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "file:stream",
+      "ext": "",
+      "name": "file:stream"
+    }
+  },
+  {
+    "type": "win32",
+    "string": ".\\file",
+    "result": {
+      "root": "",
+      "dir": ".",
+      "base": "file",
+      "ext": "",
+      "name": "file"
+    }
+  },
+  {
+    "type": "posix",
+    "string": ".\\file",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": ".\\file",
+      "ext": "",
+      "name": ".\\file"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "C:",
+    "result": {
+      "root": "C:",
+      "dir": "C:",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "posix",
+    "string": "C:",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "C:",
+      "ext": "",
+      "name": "C:"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "C:.",
+    "result": {
+      "root": "C:",
+      "dir": "C:",
+      "base": ".",
+      "ext": "",
+      "name": "."
+    }
+  },
+  {
+    "type": "posix",
+    "string": "C:.",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "C:.",
+      "ext": ".",
+      "name": "C:"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "C:..",
+    "result": {
+      "root": "C:",
+      "dir": "C:",
+      "base": "..",
+      "ext": "",
+      "name": ".."
+    }
+  },
+  {
+    "type": "posix",
+    "string": "C:..",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "C:..",
+      "ext": ".",
+      "name": "C:."
+    }
+  },
+  {
+    "type": "win32",
+    "string": "C:abc",
+    "result": {
+      "root": "C:",
+      "dir": "C:",
+      "base": "abc",
+      "ext": "",
+      "name": "abc"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "C:abc",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "C:abc",
+      "ext": "",
+      "name": "C:abc"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "C:\\abc",
+    "result": {
+      "root": "C:\\",
+      "dir": "C:\\",
+      "base": "abc",
+      "ext": "",
+      "name": "abc"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "C:\\abc",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "C:\\abc",
+      "ext": "",
+      "name": "C:\\abc"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "\\\\server\\share\\file_path",
+    "result": {
+      "root": "\\\\server\\share\\",
+      "dir": "\\\\server\\share\\",
+      "base": "file_path",
+      "ext": "",
+      "name": "file_path"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "\\\\server\\share\\file_path",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "\\\\server\\share\\file_path",
+      "ext": "",
+      "name": "\\\\server\\share\\file_path"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "\\\\server\\share\\",
+    "result": {
+      "root": "\\\\server\\share\\",
+      "dir": "\\\\server\\share\\",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "posix",
+    "string": "\\\\server\\share\\",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "\\\\server\\share\\",
+      "ext": "",
+      "name": "\\\\server\\share\\"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "\\\\server two\\shared folder\\file path.zip",
+    "result": {
+      "root": "\\\\server two\\shared folder\\",
+      "dir": "\\\\server two\\shared folder\\",
+      "base": "file path.zip",
+      "ext": ".zip",
+      "name": "file path"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "\\\\server two\\shared folder\\file path.zip",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "\\\\server two\\shared folder\\file path.zip",
+      "ext": ".zip",
+      "name": "\\\\server two\\shared folder\\file path"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "\\\\server two\\shared folder\\",
+    "result": {
+      "root": "\\\\server two\\shared folder\\",
+      "dir": "\\\\server two\\shared folder\\",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "posix",
+    "string": "\\\\server two\\shared folder\\",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "\\\\server two\\shared folder\\",
+      "ext": "",
+      "name": "\\\\server two\\shared folder\\"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "\\\\teela\\admin$\\system32",
+    "result": {
+      "root": "\\\\teela\\admin$\\",
+      "dir": "\\\\teela\\admin$\\",
+      "base": "system32",
+      "ext": "",
+      "name": "system32"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "\\\\teela\\admin$\\system32",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "\\\\teela\\admin$\\system32",
+      "ext": "",
+      "name": "\\\\teela\\admin$\\system32"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "\\\\teela\\admin$\\",
+    "result": {
+      "root": "\\\\teela\\admin$\\",
+      "dir": "\\\\teela\\admin$\\",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "posix",
+    "string": "\\\\teela\\admin$\\",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "\\\\teela\\admin$\\",
+      "ext": "",
+      "name": "\\\\teela\\admin$\\"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "\\\\?\\UNC\\server\\share",
+    "result": {
+      "root": "\\\\?\\UNC\\",
+      "dir": "\\\\?\\UNC\\server",
+      "base": "share",
+      "ext": "",
+      "name": "share"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "\\\\?\\UNC\\server\\share",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "\\\\?\\UNC\\server\\share",
+      "ext": "",
+      "name": "\\\\?\\UNC\\server\\share"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "\\\\?\\UNC\\",
+    "result": {
+      "root": "\\\\?\\UNC\\",
+      "dir": "\\\\?\\UNC\\",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "posix",
+    "string": "\\\\?\\UNC\\",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "\\\\?\\UNC\\",
+      "ext": "",
+      "name": "\\\\?\\UNC\\"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/foo/bar",
+    "result": {
+      "root": "/",
+      "dir": "/foo",
+      "base": "bar",
+      "ext": "",
+      "name": "bar"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/foo/bar",
+    "result": {
+      "root": "/",
+      "dir": "/foo",
+      "base": "bar",
+      "ext": "",
+      "name": "bar"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "win32",
+    "string": "some\\dir",
+    "result": {
+      "root": "",
+      "dir": "some",
+      "base": "dir",
+      "ext": "",
+      "name": "dir"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "some\\dir",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "some\\dir",
+      "ext": "",
+      "name": "some\\dir"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "some\\dir\\",
+    "result": {
+      "root": "",
+      "dir": "some",
+      "base": "dir",
+      "ext": "",
+      "name": "dir"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "some\\dir\\",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "some\\dir\\",
+      "ext": "",
+      "name": "some\\dir\\"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "index.html",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "index.html",
+      "ext": ".html",
+      "name": "index"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "index.html",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "index.html",
+      "ext": ".html",
+      "name": "index"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "index",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "index",
+      "ext": "",
+      "name": "index"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "index",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "index",
+      "ext": "",
+      "name": "index"
+    }
+  },
+  {
+    "type": "win32",
+    "string": ".html",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": ".html",
+      "ext": "",
+      "name": ".html"
+    }
+  },
+  {
+    "type": "posix",
+    "string": ".html",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": ".html",
+      "ext": "",
+      "name": ".html"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "some\\dir\\index.html",
+    "result": {
+      "root": "",
+      "dir": "some\\dir",
+      "base": "index.html",
+      "ext": ".html",
+      "name": "index"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "some\\dir\\index.html",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "some\\dir\\index.html",
+      "ext": ".html",
+      "name": "some\\dir\\index"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "C:\\index.html",
+    "result": {
+      "root": "C:\\",
+      "dir": "C:\\",
+      "base": "index.html",
+      "ext": ".html",
+      "name": "index"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "C:\\index.html",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "C:\\index.html",
+      "ext": ".html",
+      "name": "C:\\index"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/home/user/dir/file.txt",
+    "result": {
+      "root": "/",
+      "dir": "/home/user/dir",
+      "base": "file.txt",
+      "ext": ".txt",
+      "name": "file"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/home/user/dir/file.txt",
+    "result": {
+      "root": "/",
+      "dir": "/home/user/dir",
+      "base": "file.txt",
+      "ext": ".txt",
+      "name": "file"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/home/user/a dir/another File.zip",
+    "result": {
+      "root": "/",
+      "dir": "/home/user/a dir",
+      "base": "another File.zip",
+      "ext": ".zip",
+      "name": "another File"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/home/user/a dir/another File.zip",
+    "result": {
+      "root": "/",
+      "dir": "/home/user/a dir",
+      "base": "another File.zip",
+      "ext": ".zip",
+      "name": "another File"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/home/user/a dir//another&File.",
+    "result": {
+      "root": "/",
+      "dir": "/home/user/a dir/",
+      "base": "another&File.",
+      "ext": ".",
+      "name": "another&File"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/home/user/a dir//another&File.",
+    "result": {
+      "root": "/",
+      "dir": "/home/user/a dir/",
+      "base": "another&File.",
+      "ext": ".",
+      "name": "another&File"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/home/user/a$$$dir//another File.zip",
+    "result": {
+      "root": "/",
+      "dir": "/home/user/a$$$dir/",
+      "base": "another File.zip",
+      "ext": ".zip",
+      "name": "another File"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/home/user/a$$$dir//another File.zip",
+    "result": {
+      "root": "/",
+      "dir": "/home/user/a$$$dir/",
+      "base": "another File.zip",
+      "ext": ".zip",
+      "name": "another File"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "user/dir/another File.zip",
+    "result": {
+      "root": "",
+      "dir": "user/dir",
+      "base": "another File.zip",
+      "ext": ".zip",
+      "name": "another File"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "user/dir/another File.zip",
+    "result": {
+      "root": "",
+      "dir": "user/dir",
+      "base": "another File.zip",
+      "ext": ".zip",
+      "name": "another File"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "./file",
+    "result": {
+      "root": "",
+      "dir": ".",
+      "base": "file",
+      "ext": "",
+      "name": "file"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "./file",
+    "result": {
+      "root": "",
+      "dir": ".",
+      "base": "file",
+      "ext": "",
+      "name": "file"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "C:\\foo",
+    "result": {
+      "root": "C:\\",
+      "dir": "C:\\",
+      "base": "foo",
+      "ext": "",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "C:\\foo",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "C:\\foo",
+      "ext": "",
+      "name": "C:\\foo"
+    }
+  },
+  {
+    "type": "win32",
+    "string": ".",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": ".",
+      "ext": "",
+      "name": "."
+    }
+  },
+  {
+    "type": "posix",
+    "string": ".",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": ".",
+      "ext": "",
+      "name": "."
+    }
+  },
+  {
+    "type": "win32",
+    "string": "..",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "..",
+      "ext": "",
+      "name": ".."
+    }
+  },
+  {
+    "type": "posix",
+    "string": "..",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "..",
+      "ext": "",
+      "name": ".."
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/foo",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "foo",
+      "ext": "",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/foo",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "foo",
+      "ext": "",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/foo.",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "foo.",
+      "ext": ".",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/foo.",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "foo.",
+      "ext": ".",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/foo.bar",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "foo.bar",
+      "ext": ".bar",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/foo.bar",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "foo.bar",
+      "ext": ".bar",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/.",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": ".",
+      "ext": "",
+      "name": "."
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/.",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": ".",
+      "ext": "",
+      "name": "."
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/.foo",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": ".foo",
+      "ext": "",
+      "name": ".foo"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/.foo",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": ".foo",
+      "ext": "",
+      "name": ".foo"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/.foo.bar",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": ".foo.bar",
+      "ext": ".bar",
+      "name": ".foo"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/.foo.bar",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": ".foo.bar",
+      "ext": ".bar",
+      "name": ".foo"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/foo/bar.baz",
+    "result": {
+      "root": "/",
+      "dir": "/foo",
+      "base": "bar.baz",
+      "ext": ".baz",
+      "name": "bar"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/foo/bar.baz",
+    "result": {
+      "root": "/",
+      "dir": "/foo",
+      "base": "bar.baz",
+      "ext": ".baz",
+      "name": "bar"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "some/dir",
+    "result": {
+      "root": "",
+      "dir": "some",
+      "base": "dir",
+      "ext": "",
+      "name": "dir"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "some/dir",
+    "result": {
+      "root": "",
+      "dir": "some",
+      "base": "dir",
+      "ext": "",
+      "name": "dir"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "some/dir/",
+    "result": {
+      "root": "",
+      "dir": "some",
+      "base": "dir",
+      "ext": "",
+      "name": "dir"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "some/dir/",
+    "result": {
+      "root": "",
+      "dir": "some",
+      "base": "dir",
+      "ext": "",
+      "name": "dir"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "some/dir/index.html",
+    "result": {
+      "root": "",
+      "dir": "some/dir",
+      "base": "index.html",
+      "ext": ".html",
+      "name": "index"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "some/dir/index.html",
+    "result": {
+      "root": "",
+      "dir": "some/dir",
+      "base": "index.html",
+      "ext": ".html",
+      "name": "index"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/index.html",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "index.html",
+      "ext": ".html",
+      "name": "index"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/index.html",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "index.html",
+      "ext": ".html",
+      "name": "index"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "ERR_INVALID_ARG_TYPE",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "ERR_INVALID_ARG_TYPE",
+      "ext": "",
+      "name": "ERR_INVALID_ARG_TYPE"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "ERR_INVALID_ARG_TYPE",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "ERR_INVALID_ARG_TYPE",
+      "ext": "",
+      "name": "ERR_INVALID_ARG_TYPE"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "parse",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "parse",
+      "ext": "",
+      "name": "parse"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "parse",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "parse",
+      "ext": "",
+      "name": "parse"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "format",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "format",
+      "ext": "",
+      "name": "format"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "format",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "format",
+      "ext": "",
+      "name": "format"
+    }
+  },
+  {
+    "type": "win32",
+    "string": ".\\",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": ".",
+      "ext": "",
+      "name": "."
+    }
+  },
+  {
+    "type": "posix",
+    "string": ".\\",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": ".\\",
+      "ext": "",
+      "name": ".\\"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "\\\\",
+    "result": {
+      "root": "\\",
+      "dir": "\\",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "posix",
+    "string": "\\\\",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "\\\\",
+      "ext": "",
+      "name": "\\\\"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "c:\\foo\\\\\\",
+    "result": {
+      "root": "c:\\",
+      "dir": "c:\\",
+      "base": "foo",
+      "ext": "",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "c:\\foo\\\\\\",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "c:\\foo\\\\\\",
+      "ext": "",
+      "name": "c:\\foo\\\\\\"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "c:\\",
+    "result": {
+      "root": "c:\\",
+      "dir": "c:\\",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "posix",
+    "string": "c:\\",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "c:\\",
+      "ext": "",
+      "name": "c:\\"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "foo",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "foo",
+      "ext": "",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "foo",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "foo",
+      "ext": "",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "D:\\foo\\\\\\bar.baz",
+    "result": {
+      "root": "D:\\",
+      "dir": "D:\\foo\\\\",
+      "base": "bar.baz",
+      "ext": ".baz",
+      "name": "bar"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "D:\\foo\\\\\\bar.baz",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "D:\\foo\\\\\\bar.baz",
+      "ext": ".baz",
+      "name": "D:\\foo\\\\\\bar"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "D:\\",
+    "result": {
+      "root": "D:\\",
+      "dir": "D:\\",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "posix",
+    "string": "D:\\",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "D:\\",
+      "ext": "",
+      "name": "D:\\"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "D:\\foo\\\\",
+    "result": {
+      "root": "D:\\",
+      "dir": "D:\\",
+      "base": "foo",
+      "ext": "",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "D:\\foo\\\\",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "D:\\foo\\\\",
+      "ext": "",
+      "name": "D:\\foo\\\\"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "bar.baz",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "bar.baz",
+      "ext": ".baz",
+      "name": "bar"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "bar.baz",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "bar.baz",
+      "ext": ".baz",
+      "name": "bar"
+    }
+  },
+  {
+    "type": "win32",
+    "string": ".baz",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": ".baz",
+      "ext": "",
+      "name": ".baz"
+    }
+  },
+  {
+    "type": "posix",
+    "string": ".baz",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": ".baz",
+      "ext": "",
+      "name": ".baz"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "bar",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "bar",
+      "ext": "",
+      "name": "bar"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "bar",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "bar",
+      "ext": "",
+      "name": "bar"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "./",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": ".",
+      "ext": "",
+      "name": "."
+    }
+  },
+  {
+    "type": "posix",
+    "string": "./",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": ".",
+      "ext": "",
+      "name": "."
+    }
+  },
+  {
+    "type": "win32",
+    "string": "//",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "posix",
+    "string": "//",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "win32",
+    "string": "///",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "posix",
+    "string": "///",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "",
+      "ext": "",
+      "name": ""
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/foo///",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "foo",
+      "ext": "",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/foo///",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "foo",
+      "ext": "",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/foo///bar.baz",
+    "result": {
+      "root": "/",
+      "dir": "/foo//",
+      "base": "bar.baz",
+      "ext": ".baz",
+      "name": "bar"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/foo///bar.baz",
+    "result": {
+      "root": "/",
+      "dir": "/foo//",
+      "base": "bar.baz",
+      "ext": ".baz",
+      "name": "bar"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "/foo//",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "foo",
+      "ext": "",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "/foo//",
+    "result": {
+      "root": "/",
+      "dir": "/",
+      "base": "foo",
+      "ext": "",
+      "name": "foo"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "win32",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "win32",
+      "ext": "",
+      "name": "win32"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "win32",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "win32",
+      "ext": "",
+      "name": "win32"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "posix",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "posix",
+      "ext": "",
+      "name": "posix"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "posix",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "posix",
+      "ext": "",
+      "name": "posix"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "string",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "string",
+      "ext": "",
+      "name": "string"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "string",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "string",
+      "ext": "",
+      "name": "string"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "null",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "null",
+      "ext": "",
+      "name": "null"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "null",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "null",
+      "ext": "",
+      "name": "null"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "The \"pathObject\" argument must be of type Object. ",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "The \"pathObject\" argument must be of type Object. ",
+      "ext": ". ",
+      "name": "The \"pathObject\" argument must be of type Object"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "The \"pathObject\" argument must be of type Object. ",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "The \"pathObject\" argument must be of type Object. ",
+      "ext": ". ",
+      "name": "The \"pathObject\" argument must be of type Object"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "///xxx",
+    "result": {
+      "root": "/",
+      "dir": "//",
+      "base": "xxx",
+      "ext": "",
+      "name": "xxx"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "///xxx",
+    "result": {
+      "root": "/",
+      "dir": "//",
+      "base": "xxx",
+      "ext": "",
+      "name": "xxx"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "C:\\abc\\def",
+    "result": {
+      "root": "C:\\",
+      "dir": "C:\\abc",
+      "base": "def",
+      "ext": "",
+      "name": "def"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "C:\\abc\\def",
+    "result": {
+      "root": "",
+      "dir": "",
+      "base": "C:\\abc\\def",
+      "ext": "",
+      "name": "C:\\abc\\def"
+    }
+  },
+  {
+    "type": "win32",
+    "string": "http://example/com/?foo=bar&foo#baz",
+    "result": {
+      "root": "",
+      "dir": "http://example/com",
+      "base": "?foo=bar&foo#baz",
+      "ext": "",
+      "name": "?foo=bar&foo#baz"
+    }
+  },
+  {
+    "type": "posix",
+    "string": "http://example/com/?foo=bar&foo#baz",
+    "result": {
+      "root": "",
+      "dir": "http://example/com",
+      "base": "?foo=bar&foo#baz",
+      "ext": "",
+      "name": "?foo=bar&foo#baz"
+    }
+  }
+]

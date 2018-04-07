@@ -33,6 +33,17 @@ if (`v${version}` !== process.version) {
 
 const fun2str = (fun) => Function.prototype.toString.call(fun);
 
+function generateTestdata() {
+  const strings = tests.teststrings();
+  const res = [];
+  for (const string of strings) {
+    for (const type of ['win32', 'posix']) {
+      res.push({ type, string, result: path[type].parse(string) });
+    }
+  }
+  return res;
+}
+
 function build() {
   const constants = require('./node/internal/constants');
   const constantsStr = JSON.stringify(constants, undefined, 2);
@@ -80,7 +91,10 @@ if (typeof module !== 'undefined') module.exports = pathParse;
 }
 
 function verify(code) {
-  const funCode = code.replace(/.*module.exports = pathParse;/, 'return pathParse;');
+  const funCode = code.replace(
+    /.*module.exports = pathParse;/,
+    'return pathParse;'
+  );
   const obj = new Function(funCode)();
   // Assert that the code loads and we built the correct version
   assert.equal(obj.version, process.version);
@@ -103,6 +117,13 @@ function verify(code) {
   tests.run(obj, (name, run) => run(test), true);
 }
 
+console.log('Generating testdata...');
+const testdata = generateTestdata();
+fs.writeFileSync('tests.json', JSON.stringify(testdata, undefined, 2));
+console.log('Testdata written.');
+
+
+console.log('Building...');
 const code = build();
 console.log('Build complete, verifying...');
 verify(code);

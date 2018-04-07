@@ -26,6 +26,24 @@ function *gen(len, chars) {
   }
 }
 
+function read(file) {
+  return fs.readFileSync(file, 'utf-8');
+}
+
+function teststrings() {
+  const source = read('./node/test/test-path-parse-format.js');
+  const tokens = babylon.parse(source, { tokens: true }).tokens;
+  const strings = tokens
+    .filter(token => token.type.label === 'string')
+    .map(token => token.value);
+  [ '///xxx',
+    'C:\\abc\\def',
+    'http://example/com/?foo=bar&foo#baz'
+  ].forEach(string => strings.push(string));
+  const uniq = [...new Set(strings)];
+  return uniq;
+}
+
 function run(impl, test, sourceExact) {
   const current = process.version === impl.version;
   const implwrap = {
@@ -88,6 +106,13 @@ function run(impl, test, sourceExact) {
     );
     t.end();
   });
+  test('expected results on testdata', (t) => {
+    const entries = JSON.parse(read('./tests.json'));
+    for (const { string, type, result } of entries) {
+      t.deepEqual(impl[type](string), result);
+    }
+    t.end();
+  });
   test('identical result on short strings', (t) => {
     if (current) {
       for (const arg of gen(1, 'a/\\.:?')) {
@@ -127,16 +152,10 @@ function run(impl, test, sourceExact) {
   test('Identical results on Node.js test strings', (t) => {
     // Ok, let's just extract all the strings from Node.js test and ensure
     // that the behavior is identical!
-    const source = fs
-      .readFileSync('./node/test/test-path-parse-format.js', 'utf-8');
-    const tokens = babylon.parse(source, { tokens: true }).tokens;
-    const strings = tokens
-      .filter(token => token.type.label === 'string')
-      .map(token => token.value);
-    const uniq = [...new Set(strings)];
-    t.ok(uniq.length > 10);
+    const strings = teststrings();
+    t.ok(strings.length > 10);
     if (current) {
-      for (const arg of uniq) {
+      for (const arg of strings) {
         t.deepEqual(impl(arg), path.parse(arg), arg);
         t.deepEqual(impl.win32(arg), path.win32.parse(arg), arg);
         t.deepEqual(impl.posix(arg), path.posix.parse(arg), arg);
@@ -150,8 +169,7 @@ function run(impl, test, sourceExact) {
     t.end();
   });
   test('Node.js tests execution', (t) => {
-    const source = fs
-      .readFileSync('./node/test/test-path-parse-format.js', 'utf-8')
+    const source = read('./node/test/test-path-parse-format.js')
       .replace(/assert\(/, 'assert.ok(')
       .replace(/\nfunction checkFormat\([\s\S]*?\n}/, '')
       .replace(/\nconst expectedMessage[\s\S]*?\);\n/, '')
@@ -167,4 +185,4 @@ function run(impl, test, sourceExact) {
   });
 }
 
-module.exports = { run };
+module.exports = { teststrings, run };
