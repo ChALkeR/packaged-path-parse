@@ -14,6 +14,9 @@ To update, update all `*.js` files in this dir (without modifying them
 manually), update `package.json` file to specify the current Node.js version you
 took those from, and run `builder.js` script from the top dir.
 
+_It is also recommended to rebuild `package-lock.json` and install newest
+versions of deps._
+
 Make sure that `builder.js` succeeds and modify it if needed.
 
 If `path.js` was updated — try to include tests for the new behavior.
