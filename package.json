@@ -4,8 +4,8 @@
   "description": "path.parse() from Node.js as a standalone package",
   "main": "index.js",
   "scripts": {
-    "build": "node ./builder.js && babel path-parse-raw.js --out-file index.js && npm t",
-    "buildtest": "node ./builder.js check && babel path-parse-raw.js --out-file index.js && npm t",
+    "build": "node ./builder.js && npm t",
+    "buildtest": "node ./builder.js check && npm t",
     "simpletest": "node test/run-simple.js",
     "test": "tape test/run-all.js"
   },
@@ -32,7 +32,7 @@
     "url": "https://github.com/ChALkeR/packaged-path-parse/issues"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
     "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
     "babel-plugin-transform-es3-property-literals": "^6.22.0",
     "babel-plugin-transform-es5-property-mutators": "^6.24.1",

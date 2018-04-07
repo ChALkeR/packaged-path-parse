@@ -19,6 +19,7 @@
 const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
+const babel = require('babel-core');
 const testsSimple = require('./test/simple');
 const testsComplex = require('./test/complex');
 const { version } = require('./package.json');
@@ -93,7 +94,7 @@ if (typeof module !== 'undefined') module.exports = pathParse;
   return `${code}\n`;
 }
 
-function verify(code) {
+function verify(code, sourceExact) {
   const funCode = code.replace(
     /.*module.exports = pathParse;/,
     'return pathParse;'
@@ -101,9 +102,11 @@ function verify(code) {
   const obj = new Function(funCode)();
   // Assert that the code loads and returns a function
   assert.equal(typeof obj, 'function');
-  // Assert the functons are the same
-  assert.equal(fun2str(obj.win32), fun2str(path.win32.parse));
-  assert.equal(fun2str(obj.posix), fun2str(path.posix.parse));
+  if (sourceExact) {
+    // Assert the functons are the same
+    assert.equal(fun2str(obj.win32), fun2str(path.win32.parse));
+    assert.equal(fun2str(obj.posix), fun2str(path.posix.parse));
+  }
   // Assert that the code doesn't use anything we don't want or expect
   for (const text of [
     'normalizeString', '_format', 'isPosixPathSeparator',
@@ -118,7 +121,7 @@ function verify(code) {
   test.end = () => {};
   test.deepEqual = test.deepStrictEqual;
   testsSimple.run(obj, (name, run) => run(test));
-  testsComplex.run(obj, (name, run) => run(test), true, true);
+  testsComplex.run(obj, (name, run) => run(test), true, sourceExact);
 }
 
 console.log('Generating testdata...');
@@ -130,13 +133,22 @@ console.log('Testdata written.');
 console.log('Building...');
 const code = build();
 console.log('Build complete, verifying...');
-verify(code);
+verify(code, true);
 console.log('Verification complete');
+
+console.log('Transpliting...');
+const es3code = babel.transform(code,
+  JSON.parse(fs.readFileSync('.babelrc', 'utf-8'))
+).code;
+console.log('Transpliting complete, verifying...');
+verify(es3code, false);
+console.log('Verification complete');
+
 if (process.argv[2] === 'check') {
   console.log('Checking file equality...');
-  assert.equal(fs.readFileSync('path-parse-raw.js', 'utf-8'), code);
+  assert.equal(fs.readFileSync('index.js', 'utf-8'), es3code);
 } else {
   console.log('Writing file...');
-  fs.writeFileSync('path-parse-raw.js', code);
+  fs.writeFileSync('index.js', es3code);
 }
 console.log('Done!');

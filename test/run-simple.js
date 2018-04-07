@@ -16,6 +16,6 @@ try {
   var test = function(name, run) { run(t); }
 }
 
-var es3impl = require('../index');
+var impl = require('../index');
 var lib = require('./simple')
-lib.run(es3impl, test, false);
+lib.run(impl, test, false);
