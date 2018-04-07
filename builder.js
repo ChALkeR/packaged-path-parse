@@ -76,6 +76,7 @@ function build() {
   const code = `
 // packaged-path-parse - path.parse() extracted from Node.js v${version}
 
+'use strict';
 const pathParse = (function(){
 ${head}
 const win32 = ${win32};

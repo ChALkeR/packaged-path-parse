@@ -1,6 +1,6 @@
-'use strict';
-
 // packaged-path-parse - path.parse() extracted from Node.js v9.11.1
+
+'use strict';
 
 var pathParse = function () {
   // Copyright Joyent, Inc. and other Node contributors.
