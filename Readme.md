@@ -10,7 +10,7 @@ stand-alone module, without deps (including Node.js core).
 _Consider using this package through 
 [compatible-path-parse](https://github.com/ChALkeR/compatible-path-parse)
 wrapper to avoid unnecessary version updates and to ensure proper
-deduplication, see [#semver](#semver) for explanation_.
+deduplication, see [semver section](#semver) for explanation_.
 
 ## usage
 
@@ -53,7 +53,11 @@ Tested to have the exact same behavior as the corresponding Node.js version
 `path.parse()`. Tests are generated from Node.js code automatically, based on
 strings present in Node.js path tests, and validated on any version.
 
-Also tested for identical behavior on brute-forced strings.
+The test matrix on Travis starts with Node.js 0.8.6 — the lowest one that has
+pre-built Linux binaries that `nvm` can install.
+
+Also tested for identical behavior on brute-forced strings on the exact same
+version that the code was taken from.
 
 ## Up-to-date
 
@@ -68,7 +72,7 @@ property.
 
 ## Semver?
 
-[Up-to-date](#up-to-date) section outlined why it was chosen to keep the Node.js
+[Up-to-date section](#up-to-date) outlined why it was chosen to keep the Node.js
 package version numbering for this package — to provide clear understanding of
 the Node.js version used as the source, and to give predictable behavior.
 
