@@ -1,7 +1,7 @@
 {
   "name": "packaged-path-parse",
   "version": "9.11.1",
-  "description": "A clean ponyfill for path.parse() from Node.js",
+  "description": "path.parse() from Node.js as a standalone package",
   "main": "index.js",
   "scripts": {
     "build": "node ./builder.js && babel path-parse-raw.js --out-file index.js && npm t",
