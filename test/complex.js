@@ -50,6 +50,15 @@ function run(impl, test, sourceExact) {
     posix: { parse: impl.posix },
   };
 
+  test('is either win32 or posix, and is the correct one', function (t) {
+    t.ok(impl.win32 !== impl.posix);
+    t.ok(impl === impl.win32 || impl === impl.posix);
+    t.ok(
+      impl === impl.win32 && path === path.win32 ||
+      impl === impl.posix && path === path.posix
+    );
+    t.end();
+  });
   test('equal to current version', (t) => {
     let check = process.version === impl.version;
     if (sourceExact === false) {

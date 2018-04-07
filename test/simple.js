@@ -1,6 +1,5 @@
 'use strict';
 
-var path = require('path');
 var fs = require('fs');
 
 function read(file) {
@@ -41,13 +40,9 @@ function run(impl, test, sourceExact) {
     }
     t.end();
   });
-  test('is either win32 or posix, and is the correct one', function (t) {
+  test('is either win32 or posix', function (t) {
     t.ok(impl.win32 !== impl.posix);
     t.ok(impl === impl.win32 || impl === impl.posix);
-    t.ok(
-      impl === impl.win32 && path === path.win32 ||
-      impl === impl.posix && path === path.posix
-    );
     t.end();
   });
   test('expected results on testdata', function (t) {
