@@ -46,14 +46,18 @@ function generateTestdata() {
   return res;
 }
 
+function functionRe(name) {
+  return new RegExp(`(\\n+//.*)?\\nfunction ${name}\\([\\s\\S]*?\\n}\\n+`);
+}
+
 function build() {
   const constants = require('./node/internal/constants');
   const constantsStr = JSON.stringify(constants, undefined, 2);
   const source = fs.readFileSync('node/path.js', 'utf-8')
     .replace(/errors\.TypeError/g, 'TypeError')
-    .replace(/(\n+\/\/.*)?\nfunction normalizeString\([\s\S]*?\n}\n+/, '\n')
-    .replace(/(\n+\/\/.*)?\nfunction _format\([\s\S]*?\n}\n+/, '\n')
-    .replace(/(\n+\/\/.*)?\nfunction isPosixPathSeparator\([\s\S]*?\n}\n+/, '\n')
+    .replace(functionRe('normalizeString'), '\n')
+    .replace(functionRe('_format'), '\n')
+    .replace(functionRe('isPosixPathSeparator'), '\n')
     .replace("const errors = require('internal/errors');", '')
     .replace(/const {((?:\s*[A-Z_]+,\n)+)} = require\('internal\/constants'\);/,
       (...match) => {
