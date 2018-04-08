@@ -5,12 +5,6 @@
 
 'use strict';
 
-var fs = require('fs');
-
-function read(file) {
-  return fs.readFileSync(file, 'utf-8');
-}
-
 function run(impl, test) {
   test('is a function', function(t) {
     t.equal(typeof impl, 'function');
@@ -51,7 +45,8 @@ function run(impl, test) {
     t.end();
   });
   test('expected results on testdata', function(t) {
-    var entries = JSON.parse(read('./test/data.json'));
+    // NOTE: could not be loaded at top level as builder.js changes it
+    var entries = require('./data.json');
     for (var i = 0; i < entries.length; i++) {
       var string = entries[i].string;
       var type = entries[i].type;
