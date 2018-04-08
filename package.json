@@ -4,6 +4,7 @@
   "description": "path.parse() from Node.js as a standalone package",
   "main": "index.js",
   "scripts": {
+    "browserify-test": "browserify --external tape test/run-simple.js > test/run-browserify.js && tape test/run-browserify.js",
     "lint": "eslint builder.js test/*.js",
     "build": "node ./builder.js && npm t",
     "buildtest": "node ./builder.js check && npm t",
