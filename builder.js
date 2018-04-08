@@ -117,7 +117,7 @@ function verify(code, sourceExact) {
   for (const text of [
     'normalizeString', '_format', 'isPosixPathSeparator',
     'module.exports', 'require', 'internals/',
-    'constants.', 'process.', 'errors.'
+    'process.', 'constants', 'errors', 'global', 'window'
   ]) {
     assert.equal(funCode.includes(text), false);
   }
