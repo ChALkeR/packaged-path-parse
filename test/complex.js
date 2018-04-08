@@ -4,7 +4,8 @@ const path = require('path');
 const fs = require('fs');
 const equal = require('deep-equal');
 const babylon = require('babylon');
-const fun2str = (fun) => Function.prototype.toString.call(fun);
+
+const fun2str = fun => Function.prototype.toString.call(fun);
 
 function *genOne(len, chars) {
   if (len === 0) {
@@ -20,7 +21,7 @@ function *genOne(len, chars) {
 
 function *gen(len, chars) {
   for (let i = 0; i <= len; i++) {
-    yield *genOne(i, chars);
+    yield* genOne(i, chars);
   }
 }
 
@@ -30,11 +31,12 @@ function read(file) {
 
 function teststrings() {
   const source = read('./node/test/test-path-parse-format.js');
-  const tokens = babylon.parse(source, { tokens: true }).tokens;
+  const { tokens } = babylon.parse(source, { tokens: true });
   const strings = tokens
     .filter(token => token.type.label === 'string')
     .map(token => token.value);
-  [ '///xxx',
+  [
+    '///xxx',
     'C:\\abc\\def',
     'http://example/com/?foo=bar&foo#baz'
   ].forEach(string => strings.push(string));
@@ -46,10 +48,10 @@ function run(impl, test, current = false, sourceExact = false) {
   const implwrap = {
     parse: impl,
     win32: { parse: impl.win32 },
-    posix: { parse: impl.posix },
+    posix: { parse: impl.posix }
   };
 
-  test('is either win32 or posix, and is the correct one', function (t) {
+  test('is either win32 or posix, and is the correct one', (t) => {
     t.ok(impl.win32 !== impl.posix);
     t.ok(impl === impl.win32 || impl === impl.posix);
     t.ok(
@@ -111,8 +113,7 @@ function run(impl, test, current = false, sourceExact = false) {
     t.end();
   });
   test('Identical results on Node.js test strings', (t) => {
-    // Ok, let's just extract all the strings from Node.js test and ensure
-    // that the behavior is identical!
+    // Extract all the strings from Node.js test and ensure identical behavior
     const strings = teststrings();
     t.ok(strings.length > 10);
     if (current) {

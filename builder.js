@@ -2,7 +2,7 @@
 
 /*
  * A builder helper.
- * 
+ *
  * WARNING: this works on specific versions and is just a handy tool to reduce
  * manual errors. The results of this have to be re-checked, and it is expected
  * that this tool will fail to import code from newer Node.js versions.
@@ -33,7 +33,7 @@ if (`v${version}` !== process.version) {
   throw new Error('Node.js version mismatch');
 }
 
-const fun2str = (fun) => Function.prototype.toString.call(fun);
+const fun2str = fun => Function.prototype.toString.call(fun);
 
 function generateTestdata() {
   const strings = testsComplex.teststrings();
@@ -61,16 +61,18 @@ function build() {
     .replace("const errors = require('internal/errors');", '')
     .replace(/const {((?:\s*[A-Z_]+,\n)+)} = require\('internal\/constants'\);/,
       (...match) => {
-        const names = match[1].split(',').map(x => x.trim()).filter(x => x);
-        for (const name of names) {
-          assert.ok(constants[name] !== 'undefined');
+        const keys = match[1].split(',').map(x => x.trim()).filter(x => x);
+        for (const key of keys) {
+          assert.ok(constants[key] !== 'undefined');
         }
-        return names.map(name => `const ${name} = ${constants[name]};`).join('\n');
+        return keys.map(key => `const ${key} = ${constants[key]};`).join('\n');
       }
     )
     .replace("require('internal/constants')", constantsStr);
   const head = source.replace(/const (win32|posix) = {[\s\S]*/m, '');
-  const obj = new Function(`const module = {};${source};return module.exports`)();
+  const obj = new Function(
+    `const module = {};${source};return module.exports`
+  )();
   const win32 = fun2str(obj.win32.parse);
   const posix = fun2str(obj.posix.parse);
 
@@ -121,7 +123,7 @@ function verify(code, sourceExact) {
   }
 
   // Let's now run tests on top of assert instead of tape
-  const test = {...assert};
+  const test = { ...assert };
   test.end = () => {};
   test.deepEqual = test.deepStrictEqual;
   testsSimple.run(obj, (name, run) => run(test));

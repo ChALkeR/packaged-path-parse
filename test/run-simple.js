@@ -13,9 +13,10 @@ try {
   }
   t.end = function() {};
   t.deepEqual = t.deepStrictEqual || t.deepEqual;
-  var test = function(name, run) { run(t); }
+  test = function(name, run) { run(t); };
 }
 
 var impl = require('../index');
-var lib = require('./simple')
+var lib = require('./simple');
+
 lib.run(impl, test, false);

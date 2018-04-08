@@ -3,7 +3,6 @@
 const tape = require('tape');
 const fs = require('fs');
 const impl = require('../index');
-const es3impl = require('../index');
 
 const versionRe = /extracted from Node.js ([^\n]+)\n/;
 const implVer = fs.readFileSync('./index.js', 'utf-8').match(versionRe)[1];
@@ -16,7 +15,7 @@ tape('version is fine', (t) => {
   t.end();
 });
 
-var tests = ['./simple', './complex'];
+const tests = ['./simple', './complex'];
 
 for (const test of tests) {
   const lib = require(test);

@@ -7,11 +7,11 @@ function read(file) {
 }
 
 function run(impl, test) {
-  test('is a function', function (t) {
+  test('is a function', function(t) {
     t.equal(typeof impl, 'function');
     t.end();
   });
-  test('all properties exist', function (t) {
+  test('all properties exist', function(t) {
     var props = ['win32', 'posix'];
     for (var i = 0; i < props.length; i++) {
       var name = props[i];
@@ -20,7 +20,7 @@ function run(impl, test) {
     t.deepEqual(Object.keys(impl), props);
     t.end();
   });
-  test('throws on non-strings', function (t) {
+  test('throws on non-strings', function(t) {
     var strings = [0, {}, /x/, NaN, null, undefined, new String('x')];
     for (var i = 0; i < strings.length; i++) {
       var arg = strings[i];
@@ -30,7 +30,7 @@ function run(impl, test) {
     }
     t.end();
   });
-  test('does not throw on strings', function (t) {
+  test('does not throw on strings', function(t) {
     var strings = ['', 'a', String('x')];
     for (var i = 0; i < strings.length; i++) {
       var arg = strings[i];
@@ -40,12 +40,12 @@ function run(impl, test) {
     }
     t.end();
   });
-  test('is either win32 or posix', function (t) {
+  test('is either win32 or posix', function(t) {
     t.ok(impl.win32 !== impl.posix);
     t.ok(impl === impl.win32 || impl === impl.posix);
     t.end();
   });
-  test('expected results on testdata', function (t) {
+  test('expected results on testdata', function(t) {
     var entries = JSON.parse(read('./test/data.json'));
     for (var i = 0; i < entries.length; i++) {
       var string = entries[i].string;
