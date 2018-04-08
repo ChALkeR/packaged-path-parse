@@ -1,3 +1,8 @@
+/* eslint
+   no-var:0, prefer-arrow-callback:0, prefer-template:0, object-shorthand:0,
+   prefer-destructuring: 0
+*/
+
 'use strict';
 
 var fs = require('fs');

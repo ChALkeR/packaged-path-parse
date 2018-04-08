@@ -4,10 +4,11 @@
   "description": "path.parse() from Node.js as a standalone package",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint builder.js test/*.js",
     "build": "node ./builder.js && npm t",
     "buildtest": "node ./builder.js check && npm t",
     "simpletest": "node test/run-simple.js",
-    "test": "tape test/run-all.js"
+    "test": "npm run lint && tape test/run-all.js"
   },
   "keywords": [
     "path",
@@ -39,6 +40,9 @@
     "babel-preset-es2015": "^6.24.1",
     "babylon": "^6.18.0",
     "deep-equal": "^1.0.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.10.0",
+    "eslint": "^4.19.1",
     "tape": "^4.9.0"
   },
   "files": [

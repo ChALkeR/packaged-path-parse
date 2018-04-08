@@ -1,0 +1,25 @@
+extends: airbnb-base
+parserOptions:
+  ecmaVersion: 2018
+  sourceType: "script"
+env:
+  es6: true
+  node: true
+rules:
+  function-paren-newline: 0
+  global-require: 0
+  no-console: 0
+  no-mixed-operators: 0
+  no-new-func: 0
+  no-plusplus: 0
+  no-restricted-syntax: 0
+  vars-on-top: 0
+  import/no-extraneous-dependencies: 0
+  import/no-dynamic-require: 0
+
+  comma-dangle: [2, "never"]
+  space-before-function-paren: [2, "never"]
+  generator-star-spacing: [2, {"before": true, "after": false}]
+
+  complexity: [2, 10]
+  func-style: [2, "declaration", {"allowArrowFunctions": true}]

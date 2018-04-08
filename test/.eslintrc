@@ -1,0 +1,4 @@
+rules:
+  no-loop-func: 0
+  no-new-wrappers: 0
+  func-names: 0
