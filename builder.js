@@ -30,7 +30,7 @@ if (`v${version}` !== process.version) {
     'sources from!\n The sources version should be put in package.json.\n' +
     ` Node.js version: ${process.version}.\n Package version: v${version}.`
   );
-  return;
+  throw new Error('Node.js version mismatch');
 }
 
 const fun2str = (fun) => Function.prototype.toString.call(fun);
