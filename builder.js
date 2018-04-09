@@ -19,6 +19,8 @@
 const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
+const recast = require('recast');
+const babylon = require('babylon');
 const babel = require('babel-core');
 const testsSimple = require('./test/simple');
 const testsComplex = require('./test/complex');
@@ -50,6 +52,15 @@ function functionRe(name) {
   return new RegExp(`(\\n+//.*)?\\nfunction ${name}\\([\\s\\S]*?\\n}\\n+`);
 }
 
+function transform(ast) {
+  recast.visit(ast, {
+    visitNode: function(path) {
+      this.traverse(path);
+      //path.node.original = null;
+    }
+  });
+}
+
 function build() {
   const constants = require('./node/internal/constants');
   const constantsStr = JSON.stringify(constants, undefined, 2);
@@ -69,9 +80,12 @@ function build() {
       }
     )
     .replace("require('internal/constants')", constantsStr);
-  const head = source.replace(/const (win32|posix) = {[\s\S]*/m, '');
+  const ast = recast.parse(source, { parser: babylon });
+  transform(ast);
+  const { code } = recast.print(ast);
+  const head = code.replace(/const (win32|posix) = {[\s\S]*/m, '');
   const obj = new Function(
-    `const module = {};${source};return module.exports`
+    `const module = {};${code};return module.exports`
   )();
   const win32 = fun2str(obj.win32.parse);
   const posix = fun2str(obj.posix.parse);
@@ -80,7 +94,7 @@ function build() {
   assert.equal(win32, fun2str(path.win32.parse));
   assert.equal(posix, fun2str(path.posix.parse));
 
-  const code = `
+  const result = `
 // packaged-path-parse - path.parse() extracted from Node.js v${version}
 
 'use strict';
@@ -97,7 +111,7 @@ return pathParse;
 if (typeof module !== 'undefined') module.exports = pathParse;
   `.trim();
 
-  return `${code}\n`;
+  return `${result}\n`;
 }
 
 function verify(code, sourceExact) {
