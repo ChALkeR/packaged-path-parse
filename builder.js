@@ -143,9 +143,8 @@ verify(code, true);
 console.log('Verification complete');
 
 console.log('Transpliting...');
-const es3code = babel.transform(code,
-  JSON.parse(fs.readFileSync('.babelrc', 'utf-8'))
-).code;
+const babelrc = JSON.parse(fs.readFileSync('.babelrc', 'utf-8'));
+const es3code = `${babel.transform(code, babelrc).code.trim()}\n`;
 console.log('Transpliting complete, verifying...');
 verify(es3code, false);
 console.log('Verification complete');
