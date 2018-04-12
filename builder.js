@@ -55,9 +55,12 @@ function build() {
   const constantsStr = JSON.stringify(constants, undefined, 2);
   const source = fs.readFileSync('node/path.js', 'utf-8')
     .replace(/errors\.TypeError/g, 'TypeError')
-    .replace(functionRe('normalizeString'), '\n')
+    .replace(functionRe('normalizeString[a-zA-Z0-9]*'), '\n')
+    .replace(functionRe('normalizeString[a-zA-Z0-9]*'), '\n') // two of those
     .replace(functionRe('_format'), '\n')
     .replace(functionRe('isPosixPathSeparator'), '\n')
+    .replace("Received ' + inspect(", "Received ' + (")
+    .replace("const inspect = require('util').inspect;", '')
     .replace("const errors = require('internal/errors');", '')
     .replace(/const {((?:\s*[A-Z_]+,\n)+)} = require\('internal\/constants'\);/,
       (...match) => {
@@ -116,10 +119,10 @@ function verify(code, sourceExact) {
   // Assert that the code doesn't use anything we don't want or expect
   for (const text of [
     'normalizeString', '_format', 'isPosixPathSeparator',
-    'module.exports', 'require', 'internals/',
-    'process.', 'constants', 'errors', 'global', 'window'
+    'module.exports', 'require', 'internals/', 'inspect(',
+    'process.', 'constants', 'errors', 'utils', 'global', 'window'
   ]) {
-    assert.equal(funCode.includes(text), false);
+    assert.equal(funCode.includes(text), false, text);
   }
 
   // Let's now run tests on top of assert instead of tape
