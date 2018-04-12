@@ -1739,28 +1739,6 @@
   },
   {
     "type": "win32",
-    "string": "null",
-    "result": {
-      "root": "",
-      "dir": "",
-      "base": "null",
-      "ext": "",
-      "name": "null"
-    }
-  },
-  {
-    "type": "posix",
-    "string": "null",
-    "result": {
-      "root": "",
-      "dir": "",
-      "base": "null",
-      "ext": "",
-      "name": "null"
-    }
-  },
-  {
-    "type": "win32",
     "string": "The \"pathObject\" argument must be of type Object. ",
     "result": {
       "root": "",

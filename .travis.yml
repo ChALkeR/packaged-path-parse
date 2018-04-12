@@ -1,7 +1,7 @@
 language: node_js
 node_js:
   - "stable"
-  - "9.11.1"
+  - "8.11.1"
   - "9"
   - "8"
   - "7"
@@ -10,7 +10,7 @@ notifications:
   email: false
 matrix:
   include:
-    - node_js: "9.11.1"
+    - node_js: "8.11.1"
       script: npm run buildtest
     - node_js: "stable"
       script: npm install browserify && npm run browserify-test

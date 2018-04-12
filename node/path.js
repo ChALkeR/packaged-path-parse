@@ -21,40 +21,16 @@
 
 'use strict';
 
-const errors = require('internal/errors');
-const {
-  CHAR_UPPERCASE_A,
-  CHAR_LOWERCASE_A,
-  CHAR_UPPERCASE_Z,
-  CHAR_LOWERCASE_Z,
-  CHAR_DOT,
-  CHAR_FORWARD_SLASH,
-  CHAR_BACKWARD_SLASH,
-  CHAR_COLON,
-  CHAR_QUESTION_MARK,
-} = require('internal/constants');
+const inspect = require('util').inspect;
 
 function assertPath(path) {
   if (typeof path !== 'string') {
-    throw new errors.TypeError('ERR_INVALID_ARG_TYPE', 'path', 'string');
+    throw new TypeError('Path must be a string. Received ' + inspect(path));
   }
 }
 
-function isPathSeparator(code) {
-  return code === CHAR_FORWARD_SLASH || code === CHAR_BACKWARD_SLASH;
-}
-
-function isPosixPathSeparator(code) {
-  return code === CHAR_FORWARD_SLASH;
-}
-
-function isWindowsDeviceRoot(code) {
-  return code >= CHAR_UPPERCASE_A && code <= CHAR_UPPERCASE_Z ||
-         code >= CHAR_LOWERCASE_A && code <= CHAR_LOWERCASE_Z;
-}
-
 // Resolves . and .. elements in a path with directory names
-function normalizeString(path, allowAboveRoot, separator, isPathSeparator) {
+function normalizeStringWin32(path, allowAboveRoot) {
   var res = '';
   var lastSegmentLength = 0;
   var lastSlash = -1;
@@ -63,27 +39,26 @@ function normalizeString(path, allowAboveRoot, separator, isPathSeparator) {
   for (var i = 0; i <= path.length; ++i) {
     if (i < path.length)
       code = path.charCodeAt(i);
-    else if (isPathSeparator(code))
+    else if (code === 47/*/*/ || code === 92/*\*/)
       break;
     else
-      code = CHAR_FORWARD_SLASH;
-
-    if (isPathSeparator(code)) {
+      code = 47/*/*/;
+    if (code === 47/*/*/ || code === 92/*\*/) {
       if (lastSlash === i - 1 || dots === 1) {
         // NOOP
       } else if (lastSlash !== i - 1 && dots === 2) {
         if (res.length < 2 || lastSegmentLength !== 2 ||
-            res.charCodeAt(res.length - 1) !== CHAR_DOT ||
-            res.charCodeAt(res.length - 2) !== CHAR_DOT) {
+            res.charCodeAt(res.length - 1) !== 46/*.*/ ||
+            res.charCodeAt(res.length - 2) !== 46/*.*/) {
           if (res.length > 2) {
-            const lastSlashIndex = res.lastIndexOf(separator);
+            const lastSlashIndex = res.lastIndexOf('\\');
             if (lastSlashIndex !== res.length - 1) {
               if (lastSlashIndex === -1) {
                 res = '';
                 lastSegmentLength = 0;
               } else {
                 res = res.slice(0, lastSlashIndex);
-                lastSegmentLength = res.length - 1 - res.lastIndexOf(separator);
+                lastSegmentLength = res.length - 1 - res.lastIndexOf('\\');
               }
               lastSlash = i;
               dots = 0;
@@ -99,21 +74,89 @@ function normalizeString(path, allowAboveRoot, separator, isPathSeparator) {
         }
         if (allowAboveRoot) {
           if (res.length > 0)
-            res += `${separator}..`;
+            res += '\\..';
           else
             res = '..';
           lastSegmentLength = 2;
         }
       } else {
         if (res.length > 0)
-          res += separator + path.slice(lastSlash + 1, i);
+          res += '\\' + path.slice(lastSlash + 1, i);
         else
           res = path.slice(lastSlash + 1, i);
         lastSegmentLength = i - lastSlash - 1;
       }
       lastSlash = i;
       dots = 0;
-    } else if (code === CHAR_DOT && dots !== -1) {
+    } else if (code === 46/*.*/ && dots !== -1) {
+      ++dots;
+    } else {
+      dots = -1;
+    }
+  }
+  return res;
+}
+
+// Resolves . and .. elements in a path with directory names
+function normalizeStringPosix(path, allowAboveRoot) {
+  var res = '';
+  var lastSegmentLength = 0;
+  var lastSlash = -1;
+  var dots = 0;
+  var code;
+  for (var i = 0; i <= path.length; ++i) {
+    if (i < path.length)
+      code = path.charCodeAt(i);
+    else if (code === 47/*/*/)
+      break;
+    else
+      code = 47/*/*/;
+    if (code === 47/*/*/) {
+      if (lastSlash === i - 1 || dots === 1) {
+        // NOOP
+      } else if (lastSlash !== i - 1 && dots === 2) {
+        if (res.length < 2 || lastSegmentLength !== 2 ||
+            res.charCodeAt(res.length - 1) !== 46/*.*/ ||
+            res.charCodeAt(res.length - 2) !== 46/*.*/) {
+          if (res.length > 2) {
+            const lastSlashIndex = res.lastIndexOf('/');
+            if (lastSlashIndex !== res.length - 1) {
+              if (lastSlashIndex === -1) {
+                res = '';
+                lastSegmentLength = 0;
+              } else {
+                res = res.slice(0, lastSlashIndex);
+                lastSegmentLength = res.length - 1 - res.lastIndexOf('/');
+              }
+              lastSlash = i;
+              dots = 0;
+              continue;
+            }
+          } else if (res.length === 2 || res.length === 1) {
+            res = '';
+            lastSegmentLength = 0;
+            lastSlash = i;
+            dots = 0;
+            continue;
+          }
+        }
+        if (allowAboveRoot) {
+          if (res.length > 0)
+            res += '/..';
+          else
+            res = '..';
+          lastSegmentLength = 2;
+        }
+      } else {
+        if (res.length > 0)
+          res += '/' + path.slice(lastSlash + 1, i);
+        else
+          res = path.slice(lastSlash + 1, i);
+        lastSegmentLength = i - lastSlash - 1;
+      }
+      lastSlash = i;
+      dots = 0;
+    } else if (code === 46/*.*/ && dots !== -1) {
       ++dots;
     } else {
       dots = -1;
@@ -174,26 +217,28 @@ const win32 = {
 
       var len = path.length;
       var rootEnd = 0;
+      var code = path.charCodeAt(0);
       var device = '';
       var isAbsolute = false;
-      const code = path.charCodeAt(0);
 
       // Try to match a root
       if (len > 1) {
-        if (isPathSeparator(code)) {
+        if (code === 47/*/*/ || code === 92/*\*/) {
           // Possible UNC root
 
           // If we started with a separator, we know we at least have an
           // absolute path of some kind (UNC or otherwise)
           isAbsolute = true;
 
-          if (isPathSeparator(path.charCodeAt(1))) {
+          code = path.charCodeAt(1);
+          if (code === 47/*/*/ || code === 92/*\*/) {
             // Matched double path separator at beginning
             var j = 2;
             var last = j;
             // Match 1 or more non-path separators
             for (; j < len; ++j) {
-              if (isPathSeparator(path.charCodeAt(j)))
+              code = path.charCodeAt(j);
+              if (code === 47/*/*/ || code === 92/*\*/)
                 break;
             }
             if (j < len && j !== last) {
@@ -202,7 +247,8 @@ const win32 = {
               last = j;
               // Match 1 or more path separators
               for (; j < len; ++j) {
-                if (!isPathSeparator(path.charCodeAt(j)))
+                code = path.charCodeAt(j);
+                if (code !== 47/*/*/ && code !== 92/*\*/)
                   break;
               }
               if (j < len && j !== last) {
@@ -210,7 +256,8 @@ const win32 = {
                 last = j;
                 // Match 1 or more non-path separators
                 for (; j < len; ++j) {
-                  if (isPathSeparator(path.charCodeAt(j)))
+                  code = path.charCodeAt(j);
+                  if (code === 47/*/*/ || code === 92/*\*/)
                     break;
                 }
                 if (j === len) {
@@ -229,14 +276,16 @@ const win32 = {
           } else {
             rootEnd = 1;
           }
-        } else if (isWindowsDeviceRoot(code)) {
+        } else if ((code >= 65/*A*/ && code <= 90/*Z*/) ||
+                   (code >= 97/*a*/ && code <= 122/*z*/)) {
           // Possible device root
 
-          if (path.charCodeAt(1) === CHAR_COLON) {
+          if (path.charCodeAt(1) === 58/*:*/) {
             device = path.slice(0, 2);
             rootEnd = 2;
             if (len > 2) {
-              if (isPathSeparator(path.charCodeAt(2))) {
+              code = path.charCodeAt(2);
+              if (code === 47/*/*/ || code === 92/*\*/) {
                 // Treat separator following drive name as an absolute path
                 // indicator
                 isAbsolute = true;
@@ -245,7 +294,7 @@ const win32 = {
             }
           }
         }
-      } else if (isPathSeparator(code)) {
+      } else if (code === 47/*/*/ || code === 92/*\*/) {
         // `path` contains just a path separator
         rootEnd = 1;
         isAbsolute = true;
@@ -276,8 +325,7 @@ const win32 = {
     // fails)
 
     // Normalize the tail path
-    resolvedTail = normalizeString(resolvedTail, !resolvedAbsolute, '\\',
-                                   isPathSeparator);
+    resolvedTail = normalizeStringWin32(resolvedTail, !resolvedAbsolute);
 
     return (resolvedDevice + (resolvedAbsolute ? '\\' : '') + resolvedTail) ||
            '.';
@@ -289,26 +337,28 @@ const win32 = {
     if (len === 0)
       return '.';
     var rootEnd = 0;
+    var code = path.charCodeAt(0);
     var device;
     var isAbsolute = false;
-    const code = path.charCodeAt(0);
 
     // Try to match a root
     if (len > 1) {
-      if (isPathSeparator(code)) {
+      if (code === 47/*/*/ || code === 92/*\*/) {
         // Possible UNC root
 
         // If we started with a separator, we know we at least have an absolute
         // path of some kind (UNC or otherwise)
         isAbsolute = true;
 
-        if (isPathSeparator(path.charCodeAt(1))) {
+        code = path.charCodeAt(1);
+        if (code === 47/*/*/ || code === 92/*\*/) {
           // Matched double path separator at beginning
           var j = 2;
           var last = j;
           // Match 1 or more non-path separators
           for (; j < len; ++j) {
-            if (isPathSeparator(path.charCodeAt(j)))
+            code = path.charCodeAt(j);
+            if (code === 47/*/*/ || code === 92/*\*/)
               break;
           }
           if (j < len && j !== last) {
@@ -317,7 +367,8 @@ const win32 = {
             last = j;
             // Match 1 or more path separators
             for (; j < len; ++j) {
-              if (!isPathSeparator(path.charCodeAt(j)))
+              code = path.charCodeAt(j);
+              if (code !== 47/*/*/ && code !== 92/*\*/)
                 break;
             }
             if (j < len && j !== last) {
@@ -325,7 +376,8 @@ const win32 = {
               last = j;
               // Match 1 or more non-path separators
               for (; j < len; ++j) {
-                if (isPathSeparator(path.charCodeAt(j)))
+                code = path.charCodeAt(j);
+                if (code === 47/*/*/ || code === 92/*\*/)
                   break;
               }
               if (j === len) {
@@ -345,14 +397,16 @@ const win32 = {
         } else {
           rootEnd = 1;
         }
-      } else if (isWindowsDeviceRoot(code)) {
+      } else if ((code >= 65/*A*/ && code <= 90/*Z*/) ||
+                 (code >= 97/*a*/ && code <= 122/*z*/)) {
         // Possible device root
 
-        if (path.charCodeAt(1) === CHAR_COLON) {
+        if (path.charCodeAt(1) === 58/*:*/) {
           device = path.slice(0, 2);
           rootEnd = 2;
           if (len > 2) {
-            if (isPathSeparator(path.charCodeAt(2))) {
+            code = path.charCodeAt(2);
+            if (code === 47/*/*/ || code === 92/*\*/) {
               // Treat separator following drive name as an absolute path
               // indicator
               isAbsolute = true;
@@ -361,22 +415,22 @@ const win32 = {
           }
         }
       }
-    } else if (isPathSeparator(code)) {
+    } else if (code === 47/*/*/ || code === 92/*\*/) {
       // `path` contains just a path separator, exit early to avoid unnecessary
       // work
       return '\\';
     }
 
+    code = path.charCodeAt(len - 1);
+    var trailingSeparator = (code === 47/*/*/ || code === 92/*\*/);
     var tail;
-    if (rootEnd < len) {
-      tail = normalizeString(path.slice(rootEnd), !isAbsolute, '\\',
-                             isPathSeparator);
-    } else {
+    if (rootEnd < len)
+      tail = normalizeStringWin32(path.slice(rootEnd), !isAbsolute);
+    else
       tail = '';
-    }
     if (tail.length === 0 && !isAbsolute)
       tail = '.';
-    if (tail.length > 0 && isPathSeparator(path.charCodeAt(len - 1)))
+    if (tail.length > 0 && trailingSeparator)
       tail += '\\';
     if (device === undefined) {
       if (isAbsolute) {
@@ -407,15 +461,16 @@ const win32 = {
     const len = path.length;
     if (len === 0)
       return false;
-
-    const code = path.charCodeAt(0);
-    if (isPathSeparator(code)) {
+    var code = path.charCodeAt(0);
+    if (code === 47/*/*/ || code === 92/*\*/) {
       return true;
-    } else if (isWindowsDeviceRoot(code)) {
+    } else if ((code >= 65/*A*/ && code <= 90/*Z*/) ||
+               (code >= 97/*a*/ && code <= 122/*z*/)) {
       // Possible device root
 
-      if (len > 2 && path.charCodeAt(1) === CHAR_COLON) {
-        if (isPathSeparator(path.charCodeAt(2)))
+      if (len > 2 && path.charCodeAt(1) === 58/*:*/) {
+        code = path.charCodeAt(2);
+        if (code === 47/*/*/ || code === 92/*\*/)
           return true;
       }
     }
@@ -458,14 +513,17 @@ const win32 = {
     //   path.join('//server', 'share') -> '\\\\server\\share\\')
     var needsReplace = true;
     var slashCount = 0;
-    if (isPathSeparator(firstPart.charCodeAt(0))) {
+    var code = firstPart.charCodeAt(0);
+    if (code === 47/*/*/ || code === 92/*\*/) {
       ++slashCount;
       const firstLen = firstPart.length;
       if (firstLen > 1) {
-        if (isPathSeparator(firstPart.charCodeAt(1))) {
+        code = firstPart.charCodeAt(1);
+        if (code === 47/*/*/ || code === 92/*\*/) {
           ++slashCount;
           if (firstLen > 2) {
-            if (isPathSeparator(firstPart.charCodeAt(2)))
+            code = firstPart.charCodeAt(2);
+            if (code === 47/*/*/ || code === 92/*\*/)
               ++slashCount;
             else {
               // We matched a UNC path in the first part
@@ -478,7 +536,8 @@ const win32 = {
     if (needsReplace) {
       // Find any more consecutive slashes we need to replace
       for (; slashCount < joined.length; ++slashCount) {
-        if (!isPathSeparator(joined.charCodeAt(slashCount)))
+        code = joined.charCodeAt(slashCount);
+        if (code !== 47/*/*/ && code !== 92/*\*/)
           break;
       }
 
@@ -517,13 +576,13 @@ const win32 = {
     // Trim any leading backslashes
     var fromStart = 0;
     for (; fromStart < from.length; ++fromStart) {
-      if (from.charCodeAt(fromStart) !== CHAR_BACKWARD_SLASH)
+      if (from.charCodeAt(fromStart) !== 92/*\*/)
         break;
     }
     // Trim trailing backslashes (applicable to UNC paths only)
     var fromEnd = from.length;
     for (; fromEnd - 1 > fromStart; --fromEnd) {
-      if (from.charCodeAt(fromEnd - 1) !== CHAR_BACKWARD_SLASH)
+      if (from.charCodeAt(fromEnd - 1) !== 92/*\*/)
         break;
     }
     var fromLen = (fromEnd - fromStart);
@@ -531,13 +590,13 @@ const win32 = {
     // Trim any leading backslashes
     var toStart = 0;
     for (; toStart < to.length; ++toStart) {
-      if (to.charCodeAt(toStart) !== CHAR_BACKWARD_SLASH)
+      if (to.charCodeAt(toStart) !== 92/*\*/)
         break;
     }
     // Trim trailing backslashes (applicable to UNC paths only)
     var toEnd = to.length;
     for (; toEnd - 1 > toStart; --toEnd) {
-      if (to.charCodeAt(toEnd - 1) !== CHAR_BACKWARD_SLASH)
+      if (to.charCodeAt(toEnd - 1) !== 92/*\*/)
         break;
     }
     var toLen = (toEnd - toStart);
@@ -549,7 +608,7 @@ const win32 = {
     for (; i <= length; ++i) {
       if (i === length) {
         if (toLen > length) {
-          if (to.charCodeAt(toStart + i) === CHAR_BACKWARD_SLASH) {
+          if (to.charCodeAt(toStart + i) === 92/*\*/) {
             // We get here if `from` is the exact base path for `to`.
             // For example: from='C:\\foo\\bar'; to='C:\\foo\\bar\\baz'
             return toOrig.slice(toStart + i + 1);
@@ -560,7 +619,7 @@ const win32 = {
           }
         }
         if (fromLen > length) {
-          if (from.charCodeAt(fromStart + i) === CHAR_BACKWARD_SLASH) {
+          if (from.charCodeAt(fromStart + i) === 92/*\*/) {
             // We get here if `to` is the exact base path for `from`.
             // For example: from='C:\\foo\\bar'; to='C:\\foo'
             lastCommonSep = i;
@@ -576,7 +635,7 @@ const win32 = {
       var toCode = to.charCodeAt(toStart + i);
       if (fromCode !== toCode)
         break;
-      else if (fromCode === CHAR_BACKWARD_SLASH)
+      else if (fromCode === 92/*\*/)
         lastCommonSep = i;
     }
 
@@ -592,7 +651,7 @@ const win32 = {
     // Generate the relative path based on the path difference between `to` and
     // `from`
     for (i = fromStart + lastCommonSep + 1; i <= fromEnd; ++i) {
-      if (i === fromEnd || from.charCodeAt(i) === CHAR_BACKWARD_SLASH) {
+      if (i === fromEnd || from.charCodeAt(i) === 92/*\*/) {
         if (out.length === 0)
           out += '..';
         else
@@ -606,14 +665,14 @@ const win32 = {
       return out + toOrig.slice(toStart + lastCommonSep, toEnd);
     else {
       toStart += lastCommonSep;
-      if (toOrig.charCodeAt(toStart) === CHAR_BACKWARD_SLASH)
+      if (toOrig.charCodeAt(toStart) === 92/*\*/)
         ++toStart;
       return toOrig.slice(toStart, toEnd);
     }
   },
 
 
-  toNamespacedPath: function toNamespacedPath(path) {
+  _makeLong: function _makeLong(path) {
     // Note: this will *probably* throw somewhere.
     if (typeof path !== 'string')
       return path;
@@ -625,21 +684,23 @@ const win32 = {
     const resolvedPath = win32.resolve(path);
 
     if (resolvedPath.length >= 3) {
-      if (resolvedPath.charCodeAt(0) === CHAR_BACKWARD_SLASH) {
+      var code = resolvedPath.charCodeAt(0);
+      if (code === 92/*\*/) {
         // Possible UNC root
 
-        if (resolvedPath.charCodeAt(1) === CHAR_BACKWARD_SLASH) {
-          const code = resolvedPath.charCodeAt(2);
-          if (code !== CHAR_QUESTION_MARK && code !== CHAR_DOT) {
+        if (resolvedPath.charCodeAt(1) === 92/*\*/) {
+          code = resolvedPath.charCodeAt(2);
+          if (code !== 63/*?*/ && code !== 46/*.*/) {
             // Matched non-long UNC root, convert the path to a long UNC path
             return '\\\\?\\UNC\\' + resolvedPath.slice(2);
           }
         }
-      } else if (isWindowsDeviceRoot(resolvedPath.charCodeAt(0))) {
+      } else if ((code >= 65/*A*/ && code <= 90/*Z*/) ||
+                 (code >= 97/*a*/ && code <= 122/*z*/)) {
         // Possible device root
 
-        if (resolvedPath.charCodeAt(1) === CHAR_COLON &&
-            resolvedPath.charCodeAt(2) === CHAR_BACKWARD_SLASH) {
+        if (resolvedPath.charCodeAt(1) === 58/*:*/ &&
+            resolvedPath.charCodeAt(2) === 92/*\*/) {
           // Matched device root, convert the path to a long UNC path
           return '\\\\?\\' + resolvedPath;
         }
@@ -648,6 +709,7 @@ const win32 = {
 
     return path;
   },
+
 
   dirname: function dirname(path) {
     assertPath(path);
@@ -658,22 +720,24 @@ const win32 = {
     var end = -1;
     var matchedSlash = true;
     var offset = 0;
-    const code = path.charCodeAt(0);
+    var code = path.charCodeAt(0);
 
     // Try to match a root
     if (len > 1) {
-      if (isPathSeparator(code)) {
+      if (code === 47/*/*/ || code === 92/*\*/) {
         // Possible UNC root
 
         rootEnd = offset = 1;
 
-        if (isPathSeparator(path.charCodeAt(1))) {
+        code = path.charCodeAt(1);
+        if (code === 47/*/*/ || code === 92/*\*/) {
           // Matched double path separator at beginning
           var j = 2;
           var last = j;
           // Match 1 or more non-path separators
           for (; j < len; ++j) {
-            if (isPathSeparator(path.charCodeAt(j)))
+            code = path.charCodeAt(j);
+            if (code === 47/*/*/ || code === 92/*\*/)
               break;
           }
           if (j < len && j !== last) {
@@ -681,7 +745,8 @@ const win32 = {
             last = j;
             // Match 1 or more path separators
             for (; j < len; ++j) {
-              if (!isPathSeparator(path.charCodeAt(j)))
+              code = path.charCodeAt(j);
+              if (code !== 47/*/*/ && code !== 92/*\*/)
                 break;
             }
             if (j < len && j !== last) {
@@ -689,7 +754,8 @@ const win32 = {
               last = j;
               // Match 1 or more non-path separators
               for (; j < len; ++j) {
-                if (isPathSeparator(path.charCodeAt(j)))
+                code = path.charCodeAt(j);
+                if (code === 47/*/*/ || code === 92/*\*/)
                   break;
               }
               if (j === len) {
@@ -706,25 +772,28 @@ const win32 = {
             }
           }
         }
-      } else if (isWindowsDeviceRoot(code)) {
+      } else if ((code >= 65/*A*/ && code <= 90/*Z*/) ||
+                 (code >= 97/*a*/ && code <= 122/*z*/)) {
         // Possible device root
 
-        if (path.charCodeAt(1) === CHAR_COLON) {
+        if (path.charCodeAt(1) === 58/*:*/) {
           rootEnd = offset = 2;
           if (len > 2) {
-            if (isPathSeparator(path.charCodeAt(2)))
+            code = path.charCodeAt(2);
+            if (code === 47/*/*/ || code === 92/*\*/)
               rootEnd = offset = 3;
           }
         }
       }
-    } else if (isPathSeparator(code)) {
+    } else if (code === 47/*/*/ || code === 92/*\*/) {
       // `path` contains just a path separator, exit early to avoid
       // unnecessary work
       return path;
     }
 
     for (var i = len - 1; i >= offset; --i) {
-      if (isPathSeparator(path.charCodeAt(i))) {
+      code = path.charCodeAt(i);
+      if (code === 47/*/*/ || code === 92/*\*/) {
         if (!matchedSlash) {
           end = i;
           break;
@@ -747,7 +816,7 @@ const win32 = {
 
   basename: function basename(path, ext) {
     if (ext !== undefined && typeof ext !== 'string')
-      throw new errors.TypeError('ERR_INVALID_ARG_TYPE', 'ext', 'string');
+      throw new TypeError('"ext" argument must be a string');
     assertPath(path);
     var start = 0;
     var end = -1;
@@ -759,8 +828,9 @@ const win32 = {
     // disregarded
     if (path.length >= 2) {
       const drive = path.charCodeAt(0);
-      if (isWindowsDeviceRoot(drive)) {
-        if (path.charCodeAt(1) === CHAR_COLON)
+      if ((drive >= 65/*A*/ && drive <= 90/*Z*/) ||
+          (drive >= 97/*a*/ && drive <= 122/*z*/)) {
+        if (path.charCodeAt(1) === 58/*:*/)
           start = 2;
       }
     }
@@ -772,7 +842,7 @@ const win32 = {
       var firstNonSlashEnd = -1;
       for (i = path.length - 1; i >= start; --i) {
         const code = path.charCodeAt(i);
-        if (isPathSeparator(code)) {
+        if (code === 47/*/*/ || code === 92/*\*/) {
           // If we reached a path separator that was not part of a set of path
           // separators at the end of the string, stop now
           if (!matchedSlash) {
@@ -811,7 +881,8 @@ const win32 = {
       return path.slice(start, end);
     } else {
       for (i = path.length - 1; i >= start; --i) {
-        if (isPathSeparator(path.charCodeAt(i))) {
+        const code = path.charCodeAt(i);
+        if (code === 47/*/*/ || code === 92/*\*/) {
           // If we reached a path separator that was not part of a set of path
           // separators at the end of the string, stop now
           if (!matchedSlash) {
@@ -847,16 +918,18 @@ const win32 = {
     // Check for a drive letter prefix so as not to mistake the following
     // path separator as an extra separator at the end of the path that can be
     // disregarded
-
-    if (path.length >= 2 &&
-        path.charCodeAt(1) === CHAR_COLON &&
-        isWindowsDeviceRoot(path.charCodeAt(0))) {
-      start = startPart = 2;
+    if (path.length >= 2) {
+      const code = path.charCodeAt(0);
+      if (path.charCodeAt(1) === 58/*:*/ &&
+          ((code >= 65/*A*/ && code <= 90/*Z*/) ||
+           (code >= 97/*a*/ && code <= 122/*z*/))) {
+        start = startPart = 2;
+      }
     }
 
     for (var i = path.length - 1; i >= start; --i) {
       const code = path.charCodeAt(i);
-      if (isPathSeparator(code)) {
+      if (code === 47/*/*/ || code === 92/*\*/) {
         // If we reached a path separator that was not part of a set of path
         // separators at the end of the string, stop now
         if (!matchedSlash) {
@@ -871,7 +944,7 @@ const win32 = {
         matchedSlash = false;
         end = i + 1;
       }
-      if (code === CHAR_DOT) {
+      if (code === 46/*.*/) {
         // If this is our first dot, mark it as the start of our extension
         if (startDot === -1)
           startDot = i;
@@ -900,8 +973,9 @@ const win32 = {
 
   format: function format(pathObject) {
     if (pathObject === null || typeof pathObject !== 'object') {
-      throw new errors.TypeError('ERR_INVALID_ARG_TYPE', 'pathObject', 'Object',
-                                 pathObject);
+      throw new TypeError(
+        `Parameter "pathObject" must be an object, not ${typeof pathObject}`
+      );
     }
     return _format('\\', pathObject);
   },
@@ -916,21 +990,23 @@ const win32 = {
 
     var len = path.length;
     var rootEnd = 0;
-    let code = path.charCodeAt(0);
+    var code = path.charCodeAt(0);
 
     // Try to match a root
     if (len > 1) {
-      if (isPathSeparator(code)) {
+      if (code === 47/*/*/ || code === 92/*\*/) {
         // Possible UNC root
 
+        code = path.charCodeAt(1);
         rootEnd = 1;
-        if (isPathSeparator(path.charCodeAt(1))) {
+        if (code === 47/*/*/ || code === 92/*\*/) {
           // Matched double path separator at beginning
           var j = 2;
           var last = j;
           // Match 1 or more non-path separators
           for (; j < len; ++j) {
-            if (isPathSeparator(path.charCodeAt(j)))
+            code = path.charCodeAt(j);
+            if (code === 47/*/*/ || code === 92/*\*/)
               break;
           }
           if (j < len && j !== last) {
@@ -938,7 +1014,8 @@ const win32 = {
             last = j;
             // Match 1 or more path separators
             for (; j < len; ++j) {
-              if (!isPathSeparator(path.charCodeAt(j)))
+              code = path.charCodeAt(j);
+              if (code !== 47/*/*/ && code !== 92/*\*/)
                 break;
             }
             if (j < len && j !== last) {
@@ -946,7 +1023,8 @@ const win32 = {
               last = j;
               // Match 1 or more non-path separators
               for (; j < len; ++j) {
-                if (isPathSeparator(path.charCodeAt(j)))
+                code = path.charCodeAt(j);
+                if (code === 47/*/*/ || code === 92/*\*/)
                   break;
               }
               if (j === len) {
@@ -961,13 +1039,15 @@ const win32 = {
             }
           }
         }
-      } else if (isWindowsDeviceRoot(code)) {
+      } else if ((code >= 65/*A*/ && code <= 90/*Z*/) ||
+                 (code >= 97/*a*/ && code <= 122/*z*/)) {
         // Possible device root
 
-        if (path.charCodeAt(1) === CHAR_COLON) {
+        if (path.charCodeAt(1) === 58/*:*/) {
           rootEnd = 2;
           if (len > 2) {
-            if (isPathSeparator(path.charCodeAt(2))) {
+            code = path.charCodeAt(2);
+            if (code === 47/*/*/ || code === 92/*\*/) {
               if (len === 3) {
                 // `path` contains just a drive root, exit early to avoid
                 // unnecessary work
@@ -984,7 +1064,7 @@ const win32 = {
           }
         }
       }
-    } else if (isPathSeparator(code)) {
+    } else if (code === 47/*/*/ || code === 92/*\*/) {
       // `path` contains just a path separator, exit early to avoid
       // unnecessary work
       ret.root = ret.dir = path;
@@ -1007,7 +1087,7 @@ const win32 = {
     // Get non-dir info
     for (; i >= rootEnd; --i) {
       code = path.charCodeAt(i);
-      if (isPathSeparator(code)) {
+      if (code === 47/*/*/ || code === 92/*\*/) {
         // If we reached a path separator that was not part of a set of path
         // separators at the end of the string, stop now
         if (!matchedSlash) {
@@ -1022,7 +1102,7 @@ const win32 = {
         matchedSlash = false;
         end = i + 1;
       }
-      if (code === CHAR_DOT) {
+      if (code === 46/*.*/) {
         // If this is our first dot, mark it as the start of our extension
         if (startDot === -1)
           startDot = i;
@@ -1096,15 +1176,14 @@ const posix = {
       }
 
       resolvedPath = path + '/' + resolvedPath;
-      resolvedAbsolute = path.charCodeAt(0) === CHAR_FORWARD_SLASH;
+      resolvedAbsolute = path.charCodeAt(0) === 47/*/*/;
     }
 
     // At this point the path should be resolved to a full absolute path, but
     // handle relative paths to be safe (might happen when process.cwd() fails)
 
     // Normalize the path
-    resolvedPath = normalizeString(resolvedPath, !resolvedAbsolute, '/',
-                                   isPosixPathSeparator);
+    resolvedPath = normalizeStringPosix(resolvedPath, !resolvedAbsolute);
 
     if (resolvedAbsolute) {
       if (resolvedPath.length > 0)
@@ -1125,12 +1204,11 @@ const posix = {
     if (path.length === 0)
       return '.';
 
-    const isAbsolute = path.charCodeAt(0) === CHAR_FORWARD_SLASH;
-    const trailingSeparator =
-      path.charCodeAt(path.length - 1) === CHAR_FORWARD_SLASH;
+    const isAbsolute = path.charCodeAt(0) === 47/*/*/;
+    const trailingSeparator = path.charCodeAt(path.length - 1) === 47/*/*/;
 
     // Normalize the path
-    path = normalizeString(path, !isAbsolute, '/', isPosixPathSeparator);
+    path = normalizeStringPosix(path, !isAbsolute);
 
     if (path.length === 0 && !isAbsolute)
       path = '.';
@@ -1145,7 +1223,7 @@ const posix = {
 
   isAbsolute: function isAbsolute(path) {
     assertPath(path);
-    return path.length > 0 && path.charCodeAt(0) === CHAR_FORWARD_SLASH;
+    return path.length > 0 && path.charCodeAt(0) === 47/*/*/;
   },
 
 
@@ -1185,7 +1263,7 @@ const posix = {
     // Trim any leading backslashes
     var fromStart = 1;
     for (; fromStart < from.length; ++fromStart) {
-      if (from.charCodeAt(fromStart) !== CHAR_FORWARD_SLASH)
+      if (from.charCodeAt(fromStart) !== 47/*/*/)
         break;
     }
     var fromEnd = from.length;
@@ -1194,7 +1272,7 @@ const posix = {
     // Trim any leading backslashes
     var toStart = 1;
     for (; toStart < to.length; ++toStart) {
-      if (to.charCodeAt(toStart) !== CHAR_FORWARD_SLASH)
+      if (to.charCodeAt(toStart) !== 47/*/*/)
         break;
     }
     var toEnd = to.length;
@@ -1207,7 +1285,7 @@ const posix = {
     for (; i <= length; ++i) {
       if (i === length) {
         if (toLen > length) {
-          if (to.charCodeAt(toStart + i) === CHAR_FORWARD_SLASH) {
+          if (to.charCodeAt(toStart + i) === 47/*/*/) {
             // We get here if `from` is the exact base path for `to`.
             // For example: from='/foo/bar'; to='/foo/bar/baz'
             return to.slice(toStart + i + 1);
@@ -1217,7 +1295,7 @@ const posix = {
             return to.slice(toStart + i);
           }
         } else if (fromLen > length) {
-          if (from.charCodeAt(fromStart + i) === CHAR_FORWARD_SLASH) {
+          if (from.charCodeAt(fromStart + i) === 47/*/*/) {
             // We get here if `to` is the exact base path for `from`.
             // For example: from='/foo/bar/baz'; to='/foo/bar'
             lastCommonSep = i;
@@ -1233,7 +1311,7 @@ const posix = {
       var toCode = to.charCodeAt(toStart + i);
       if (fromCode !== toCode)
         break;
-      else if (fromCode === CHAR_FORWARD_SLASH)
+      else if (fromCode === 47/*/*/)
         lastCommonSep = i;
     }
 
@@ -1241,7 +1319,7 @@ const posix = {
     // Generate the relative path based on the path difference between `to`
     // and `from`
     for (i = fromStart + lastCommonSep + 1; i <= fromEnd; ++i) {
-      if (i === fromEnd || from.charCodeAt(i) === CHAR_FORWARD_SLASH) {
+      if (i === fromEnd || from.charCodeAt(i) === 47/*/*/) {
         if (out.length === 0)
           out += '..';
         else
@@ -1255,27 +1333,29 @@ const posix = {
       return out + to.slice(toStart + lastCommonSep);
     else {
       toStart += lastCommonSep;
-      if (to.charCodeAt(toStart) === CHAR_FORWARD_SLASH)
+      if (to.charCodeAt(toStart) === 47/*/*/)
         ++toStart;
       return to.slice(toStart);
     }
   },
 
 
-  toNamespacedPath: function toNamespacedPath(path) {
-    // Non-op on posix systems
+  _makeLong: function _makeLong(path) {
     return path;
   },
+
 
   dirname: function dirname(path) {
     assertPath(path);
     if (path.length === 0)
       return '.';
-    const hasRoot = path.charCodeAt(0) === CHAR_FORWARD_SLASH;
+    var code = path.charCodeAt(0);
+    var hasRoot = (code === 47/*/*/);
     var end = -1;
     var matchedSlash = true;
     for (var i = path.length - 1; i >= 1; --i) {
-      if (path.charCodeAt(i) === CHAR_FORWARD_SLASH) {
+      code = path.charCodeAt(i);
+      if (code === 47/*/*/) {
         if (!matchedSlash) {
           end = i;
           break;
@@ -1296,7 +1376,7 @@ const posix = {
 
   basename: function basename(path, ext) {
     if (ext !== undefined && typeof ext !== 'string')
-      throw new errors.TypeError('ERR_INVALID_ARG_TYPE', 'ext', 'string');
+      throw new TypeError('"ext" argument must be a string');
     assertPath(path);
 
     var start = 0;
@@ -1311,7 +1391,7 @@ const posix = {
       var firstNonSlashEnd = -1;
       for (i = path.length - 1; i >= 0; --i) {
         const code = path.charCodeAt(i);
-        if (code === CHAR_FORWARD_SLASH) {
+        if (code === 47/*/*/) {
           // If we reached a path separator that was not part of a set of path
           // separators at the end of the string, stop now
           if (!matchedSlash) {
@@ -1350,7 +1430,7 @@ const posix = {
       return path.slice(start, end);
     } else {
       for (i = path.length - 1; i >= 0; --i) {
-        if (path.charCodeAt(i) === CHAR_FORWARD_SLASH) {
+        if (path.charCodeAt(i) === 47/*/*/) {
           // If we reached a path separator that was not part of a set of path
           // separators at the end of the string, stop now
           if (!matchedSlash) {
@@ -1383,7 +1463,7 @@ const posix = {
     var preDotState = 0;
     for (var i = path.length - 1; i >= 0; --i) {
       const code = path.charCodeAt(i);
-      if (code === CHAR_FORWARD_SLASH) {
+      if (code === 47/*/*/) {
         // If we reached a path separator that was not part of a set of path
         // separators at the end of the string, stop now
         if (!matchedSlash) {
@@ -1398,7 +1478,7 @@ const posix = {
         matchedSlash = false;
         end = i + 1;
       }
-      if (code === CHAR_DOT) {
+      if (code === 46/*.*/) {
         // If this is our first dot, mark it as the start of our extension
         if (startDot === -1)
           startDot = i;
@@ -1427,8 +1507,9 @@ const posix = {
 
   format: function format(pathObject) {
     if (pathObject === null || typeof pathObject !== 'object') {
-      throw new errors.TypeError('ERR_INVALID_ARG_TYPE', 'pathObject', 'Object',
-                                 pathObject);
+      throw new TypeError(
+        `Parameter "pathObject" must be an object, not ${typeof pathObject}`
+      );
     }
     return _format('/', pathObject);
   },
@@ -1440,7 +1521,8 @@ const posix = {
     var ret = { root: '', dir: '', base: '', ext: '', name: '' };
     if (path.length === 0)
       return ret;
-    var isAbsolute = path.charCodeAt(0) === CHAR_FORWARD_SLASH;
+    var code = path.charCodeAt(0);
+    var isAbsolute = (code === 47/*/*/);
     var start;
     if (isAbsolute) {
       ret.root = '/';
@@ -1460,8 +1542,8 @@ const posix = {
 
     // Get non-dir info
     for (; i >= start; --i) {
-      const code = path.charCodeAt(i);
-      if (code === CHAR_FORWARD_SLASH) {
+      code = path.charCodeAt(i);
+      if (code === 47/*/*/) {
         // If we reached a path separator that was not part of a set of path
         // separators at the end of the string, stop now
         if (!matchedSlash) {
@@ -1476,7 +1558,7 @@ const posix = {
         matchedSlash = false;
         end = i + 1;
       }
-      if (code === CHAR_DOT) {
+      if (code === 46/*.*/) {
         // If this is our first dot, mark it as the start of our extension
         if (startDot === -1)
           startDot = i;
@@ -1533,9 +1615,6 @@ const posix = {
 posix.win32 = win32.win32 = win32;
 posix.posix = win32.posix = posix;
 
-// Legacy internal API, docs-only deprecated: DEP0080
-win32._makeLong = win32.toNamespacedPath;
-posix._makeLong = posix.toNamespacedPath;
 
 if (process.platform === 'win32')
   module.exports = win32;

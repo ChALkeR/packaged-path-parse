@@ -1,4 +1,4 @@
-// packaged-path-parse - path.parse() extracted from Node.js v9.11.1
+// packaged-path-parse - path.parse() extracted from Node.js v8.11.1
 
 'use strict';
 
@@ -26,28 +26,10 @@ var pathParse = function () {
 
   'use strict';
 
-  var CHAR_UPPERCASE_A = 65;
-  var CHAR_LOWERCASE_A = 97;
-  var CHAR_UPPERCASE_Z = 90;
-  var CHAR_LOWERCASE_Z = 122;
-  var CHAR_DOT = 46;
-  var CHAR_FORWARD_SLASH = 47;
-  var CHAR_BACKWARD_SLASH = 92;
-  var CHAR_COLON = 58;
-  var CHAR_QUESTION_MARK = 63;
-
   function assertPath(path) {
     if (typeof path !== 'string') {
-      throw new TypeError('ERR_INVALID_ARG_TYPE', 'path', 'string');
+      throw new TypeError('Path must be a string. Received ' + path);
     }
-  }
-
-  function isPathSeparator(code) {
-    return code === CHAR_FORWARD_SLASH || code === CHAR_BACKWARD_SLASH;
-  }
-
-  function isWindowsDeviceRoot(code) {
-    return code >= CHAR_UPPERCASE_A && code <= CHAR_UPPERCASE_Z || code >= CHAR_LOWERCASE_A && code <= CHAR_LOWERCASE_Z;
   }
 
   var win32 = function parse(path) {
@@ -62,73 +44,78 @@ var pathParse = function () {
 
     // Try to match a root
     if (len > 1) {
-      if (isPathSeparator(code)) {
-        // Possible UNC root
+      if (code === 47 /*/*/ || code === 92 /*\*/) {
+          // Possible UNC root
 
-        rootEnd = 1;
-        if (isPathSeparator(path.charCodeAt(1))) {
-          // Matched double path separator at beginning
-          var j = 2;
-          var last = j;
-          // Match 1 or more non-path separators
-          for (; j < len; ++j) {
-            if (isPathSeparator(path.charCodeAt(j))) break;
-          }
-          if (j < len && j !== last) {
-            // Matched!
-            last = j;
-            // Match 1 or more path separators
-            for (; j < len; ++j) {
-              if (!isPathSeparator(path.charCodeAt(j))) break;
-            }
-            if (j < len && j !== last) {
-              // Matched!
-              last = j;
+          code = path.charCodeAt(1);
+          rootEnd = 1;
+          if (code === 47 /*/*/ || code === 92 /*\*/) {
+              // Matched double path separator at beginning
+              var j = 2;
+              var last = j;
               // Match 1 or more non-path separators
               for (; j < len; ++j) {
-                if (isPathSeparator(path.charCodeAt(j))) break;
+                code = path.charCodeAt(j);
+                if (code === 47 /*/*/ || code === 92 /*\*/) break;
               }
-              if (j === len) {
-                // We matched a UNC root only
+              if (j < len && j !== last) {
+                // Matched!
+                last = j;
+                // Match 1 or more path separators
+                for (; j < len; ++j) {
+                  code = path.charCodeAt(j);
+                  if (code !== 47 /*/*/ && code !== 92 /*\*/) break;
+                }
+                if (j < len && j !== last) {
+                  // Matched!
+                  last = j;
+                  // Match 1 or more non-path separators
+                  for (; j < len; ++j) {
+                    code = path.charCodeAt(j);
+                    if (code === 47 /*/*/ || code === 92 /*\*/) break;
+                  }
+                  if (j === len) {
+                    // We matched a UNC root only
 
-                rootEnd = j;
-              } else if (j !== last) {
-                // We matched a UNC root with leftovers
+                    rootEnd = j;
+                  } else if (j !== last) {
+                    // We matched a UNC root with leftovers
 
-                rootEnd = j + 1;
+                    rootEnd = j + 1;
+                  }
+                }
               }
             }
-          }
-        }
-      } else if (isWindowsDeviceRoot(code)) {
+        } else if (code >= 65 /*A*/ && code <= 90 /*Z*/ || code >= 97 /*a*/ && code <= 122 /*z*/) {
         // Possible device root
 
-        if (path.charCodeAt(1) === CHAR_COLON) {
-          rootEnd = 2;
-          if (len > 2) {
-            if (isPathSeparator(path.charCodeAt(2))) {
-              if (len === 3) {
-                // `path` contains just a drive root, exit early to avoid
-                // unnecessary work
-                ret.root = ret.dir = path;
-                return ret;
-              }
-              rootEnd = 3;
+        if (path.charCodeAt(1) === 58 /*:*/) {
+            rootEnd = 2;
+            if (len > 2) {
+              code = path.charCodeAt(2);
+              if (code === 47 /*/*/ || code === 92 /*\*/) {
+                  if (len === 3) {
+                    // `path` contains just a drive root, exit early to avoid
+                    // unnecessary work
+                    ret.root = ret.dir = path;
+                    return ret;
+                  }
+                  rootEnd = 3;
+                }
+            } else {
+              // `path` contains just a drive root, exit early to avoid
+              // unnecessary work
+              ret.root = ret.dir = path;
+              return ret;
             }
-          } else {
-            // `path` contains just a drive root, exit early to avoid
-            // unnecessary work
-            ret.root = ret.dir = path;
-            return ret;
           }
-        }
       }
-    } else if (isPathSeparator(code)) {
-      // `path` contains just a path separator, exit early to avoid
-      // unnecessary work
-      ret.root = ret.dir = path;
-      return ret;
-    }
+    } else if (code === 47 /*/*/ || code === 92 /*\*/) {
+        // `path` contains just a path separator, exit early to avoid
+        // unnecessary work
+        ret.root = ret.dir = path;
+        return ret;
+      }
 
     if (rootEnd > 0) ret.root = path.slice(0, rootEnd);
 
@@ -145,25 +132,25 @@ var pathParse = function () {
     // Get non-dir info
     for (; i >= rootEnd; --i) {
       code = path.charCodeAt(i);
-      if (isPathSeparator(code)) {
-        // If we reached a path separator that was not part of a set of path
-        // separators at the end of the string, stop now
-        if (!matchedSlash) {
-          startPart = i + 1;
-          break;
+      if (code === 47 /*/*/ || code === 92 /*\*/) {
+          // If we reached a path separator that was not part of a set of path
+          // separators at the end of the string, stop now
+          if (!matchedSlash) {
+            startPart = i + 1;
+            break;
+          }
+          continue;
         }
-        continue;
-      }
       if (end === -1) {
         // We saw the first non-path separator, mark this as the end of our
         // extension
         matchedSlash = false;
         end = i + 1;
       }
-      if (code === CHAR_DOT) {
-        // If this is our first dot, mark it as the start of our extension
-        if (startDot === -1) startDot = i;else if (preDotState !== 1) preDotState = 1;
-      } else if (startDot !== -1) {
+      if (code === 46 /*.*/) {
+          // If this is our first dot, mark it as the start of our extension
+          if (startDot === -1) startDot = i;else if (preDotState !== 1) preDotState = 1;
+        } else if (startDot !== -1) {
         // We saw a non-dot and non-path separator before our dot, so we should
         // have a good chance at having a non-empty extension
         preDotState = -1;
@@ -196,7 +183,8 @@ var pathParse = function () {
 
     var ret = { root: '', dir: '', base: '', ext: '', name: '' };
     if (path.length === 0) return ret;
-    var isAbsolute = path.charCodeAt(0) === CHAR_FORWARD_SLASH;
+    var code = path.charCodeAt(0);
+    var isAbsolute = code === 47 /*/*/;
     var start;
     if (isAbsolute) {
       ret.root = '/';
@@ -216,26 +204,26 @@ var pathParse = function () {
 
     // Get non-dir info
     for (; i >= start; --i) {
-      var code = path.charCodeAt(i);
-      if (code === CHAR_FORWARD_SLASH) {
-        // If we reached a path separator that was not part of a set of path
-        // separators at the end of the string, stop now
-        if (!matchedSlash) {
-          startPart = i + 1;
-          break;
+      code = path.charCodeAt(i);
+      if (code === 47 /*/*/) {
+          // If we reached a path separator that was not part of a set of path
+          // separators at the end of the string, stop now
+          if (!matchedSlash) {
+            startPart = i + 1;
+            break;
+          }
+          continue;
         }
-        continue;
-      }
       if (end === -1) {
         // We saw the first non-path separator, mark this as the end of our
         // extension
         matchedSlash = false;
         end = i + 1;
       }
-      if (code === CHAR_DOT) {
-        // If this is our first dot, mark it as the start of our extension
-        if (startDot === -1) startDot = i;else if (preDotState !== 1) preDotState = 1;
-      } else if (startDot !== -1) {
+      if (code === 46 /*.*/) {
+          // If this is our first dot, mark it as the start of our extension
+          if (startDot === -1) startDot = i;else if (preDotState !== 1) preDotState = 1;
+        } else if (startDot !== -1) {
         // We saw a non-dot and non-path separator before our dot, so we should
         // have a good chance at having a non-empty extension
         preDotState = -1;
