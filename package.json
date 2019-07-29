@@ -34,16 +34,16 @@
     "url": "https://github.com/ChALkeR/packaged-path-parse/issues"
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
     "babel-plugin-transform-es3-property-literals": "^6.22.0",
     "babel-plugin-transform-es5-property-mutators": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "babylon": "^6.18.0",
     "deep-equal": "^1.0.1",
+    "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.10.0",
-    "eslint": "^4.19.1",
     "tape": "^4.9.0"
   },
   "files": [
